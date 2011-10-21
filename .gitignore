@@ -1,0 +1,9 @@
+*.6
+*.8
+*.a
+*.o
+*.so
+*.out
+*.go~
+_obj
+_testmain.go

@@ -15,36 +15,64 @@ TEXT ·Dnrm2(SB), 7, $0
 	SUBQ	$4, BP
 	JL		rest	// There are less than 4 values to process
 
+	// Check if incX != 1
+	CMPQ	AX, $8
+	JNE	with_stride
+
+	// Fully optimized loop (for incX == incY == 1)
+	full_simd_loop:
+		// Multiply first two values
+		MOVUPD	(SI), X2
+		MULPD	X2, X2
+		// Multiply second two values
+		MOVUPD	16(SI), X4
+		MULPD	X4, X4
+
+		// Update data pointer
+		ADDQ	$32, SI
+
+		// Accumulate the results of multiplications
+		ADDPD	X2, X0
+		ADDPD	X4, X1
+
+		SUBQ	$4, BP
+		JGE		full_simd_loop	// There are 4 or more values to process
+
+	JMP	hsum
+	
+with_stride:
 	// Setup long stride
 	MOVQ	AX, CX
 	SALQ	$1, CX 	// CX = 16 * incX
 
-simd_loop:
-	// Multiply first two values
-	MOVLPD	(SI), X2
-	MOVHPD	(SI)(AX*1), X2
-	MULPD	X2, X2
+	half_simd_loop:
+		// Multiply first two values
+		MOVLPD	(SI), X2
+		MOVHPD	(SI)(AX*1), X2
+		MULPD	X2, X2
 
-	// Update data pointer using long stride
-	ADDQ	CX, SI
+		// Update data pointer using long stride
+		ADDQ	CX, SI
 
-	// Multiply second two pairs
-	MOVLPD	(SI), X4
-	MOVHPD	(SI)(AX*1), X4
-	MULPD	X4, X4
+		// Multiply second two values
+		MOVLPD	(SI), X4
+		MOVHPD	(SI)(AX*1), X4
+		MULPD	X4, X4
 
-	// Update data pointer using long stride
-	ADDQ	CX, SI
+		// Update data pointer using long stride
+		ADDQ	CX, SI
 
-	// Accumulate the results of multiplications
-	ADDPD	X2, X0
-	ADDPD	X4, X1
+		// Accumulate the results of multiplications
+		ADDPD	X2, X0
+		ADDPD	X4, X1
 
-	SUBQ	$4, BP
-	JGE		simd_loop	// There are 4 or more values to process
+		SUBQ	$4, BP
+		JGE		half_simd_loop	// There are 4 or more values to process
 
-	// Summ all intermediate results from SIMD operations
+hsum:
+	// Summ intermediate results from SIMD operations
 	ADDPD	X0, X1
+	// Horizontal sum
 	MOVHLPS X1, X0
 	ADDSD	X1, X0
 

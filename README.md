@@ -7,15 +7,15 @@ Any implemented function has its own unity test and benchmark.
 
 #### Implemented functions
 
-_Level 1_
+*Level 1*
 
 Ddot, Dnrm2, Dasum
 
-_Level 2_
+*Level 2*
 
 not implemented
 
-_Level 3_
+*Level 3*
 
 not implemented
 

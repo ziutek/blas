@@ -3,13 +3,16 @@ include $(GOROOT)/src/Make.inc
 TARG=blas
 
 OFILES_amd64=\
-	     double_amd64.$O
+	     ddot_amd64.$O\
+	     dnrm2_amd64.$O\
 
 OFILES=\
 	$(OFILES_$(GOARCH))
 
 ALLGOFILES=\
-	   double.go\
+	   ddot.go\
+	   dnrm2.go\
+	   dasum.go\
 
 NOGOFILES=\
 	$(subst _$(GOARCH).$O,.go,$(OFILES_$(GOARCH)))

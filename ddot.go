@@ -1,5 +1,6 @@
 package blas
 
+// Scalar product: x^T y
 func Ddot(N int, X []float64, incX int, Y []float64, incY int) float64 {
 	var (
 		a, b, c, d float64

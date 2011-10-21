@@ -5,6 +5,18 @@ optimized for AMD64 (using SSE2 SIMD instructions).
 
 Any implemented function has its own unity test and benchmark.
 
+####Example benchmarks
+
+Generic Go code:
+
+    blas.BenchmarkDdot	 1000000	      2895 ns/op
+    blas.BenchmarkDnrm2	 1000000	      2745 ns/op
+
+Optimized AMD64 code:
+
+    blas.BenchmarkDdot	 2000000	       898 ns/op
+    blas.BenchmarkDnrm2	 5000000	       598 ns/op
+
 #### Implemented functions
 
 *Level 1*

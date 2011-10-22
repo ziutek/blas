@@ -11,11 +11,13 @@ Generic Go code:
 
     blas.BenchmarkDdot	 1000000	      2895 ns/op
     blas.BenchmarkDnrm2	 1000000	      2745 ns/op
+    blas.BenchmarkDasum	  500000	      3180 ns/op
 
 Optimized AMD64 code:
 
     blas.BenchmarkDdot	 2000000	       898 ns/op
     blas.BenchmarkDnrm2	 5000000	       598 ns/op
+    blas.BenchmarkDasum	 5000000	       567 ns/op
 
 #### Implemented functions
 

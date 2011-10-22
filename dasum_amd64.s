@@ -15,7 +15,7 @@ TEXT ·Dasum(SB), 7, $0
 	// Setup stride
 	SALQ	$3, AX	// AX = 8 * incX
 
-	// Check that there is 4 or more pairs for SIMD calculations
+	// Check that there are 4 or more values for SIMD calculations
 	SUBQ	$4, BP
 	JL		rest	// There are less than 4 values to process
 

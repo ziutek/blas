@@ -11,7 +11,7 @@ TEXT ·Dnrm2(SB), 7, $0
 	// Setup stride
 	SALQ	$3, AX	// AX = 8 * incX
 
-	// Check that there is 4 or more pairs for SIMD calculations
+	// Check that there ar 4 or more values for SIMD calculations
 	SUBQ	$4, BP
 	JL		rest	// There are less than 4 values to process
 
@@ -46,7 +46,7 @@ with_stride:
 	SALQ	$1, CX 	// CX = 16 * incX
 
 	half_simd_loop:
-		// Multiply first two values
+		// Square first two values
 		MOVLPD	(SI), X2
 		MOVHPD	(SI)(AX*1), X2
 		MULPD	X2, X2
@@ -54,7 +54,7 @@ with_stride:
 		// Update data pointer using long stride
 		ADDQ	CX, SI
 
-		// Multiply second two values
+		// Square second two values
 		MOVLPD	(SI), X4
 		MOVHPD	(SI)(AX*1), X4
 		MULPD	X4, X4
@@ -84,7 +84,7 @@ rest:
 	JE	end
 
 loop:
-	// Multiply one pair
+	// Square one value
 	MOVSD	(SI), X2
 	MULSD	X2, X2
 

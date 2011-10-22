@@ -44,7 +44,7 @@ func TestDnrm2(t *testing.T) {
 }
 
 func TestDasum(t *testing.T) {
-	vx := []float64{1, -2, 3, -4, 5, -6, 7, -8, 9}
+	vx := []float64{-1, -2, 3, -4, -5, -6, 7, -8, 9}
 	for inc := 1; inc < 9; inc++ {
 		e := 0.0
 		k := 0

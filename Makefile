@@ -11,6 +11,7 @@ OFILES=\
 	$(OFILES_$(GOARCH))
 
 ALLGOFILES=\
+	   sdot.go\
 	   ddot.go\
 	   dnrm2.go\
 	   dasum.go\

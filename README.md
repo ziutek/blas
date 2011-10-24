@@ -5,6 +5,20 @@ optimized for AMD64 (using SSE2 SIMD instructions).
 
 Any implemented function has its own unity test and benchmark.
 
+#### Implemented functions
+
+*Level 1*
+
+Sdsdot, Sdot, Ddot, Dnrm2, Dasum
+
+*Level 2*
+
+not implemented
+
+*Level 3*
+
+not implemented
+
 ####Example benchmarks
 
 <table>
@@ -19,20 +33,6 @@ Any implemented function has its own unity test and benchmark.
 All benchmarks for stride == 1 (there is best optimization in assembler for
 this special case). For other stride values optimized code will be 1.1-1.5
 times slower.
-
-#### Implemented functions
-
-*Level 1*
-
-Sdsdot, Sdot, Ddot, Dnrm2, Dasum
-
-*Level 2*
-
-not implemented
-
-*Level 3*
-
-not implemented
 
 #### Documentation
 

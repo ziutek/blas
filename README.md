@@ -7,17 +7,18 @@ Any implemented function has its own unity test and benchmark.
 
 ####Example benchmarks
 
-Generic Go code:
+<table>
+    <tr><th>Function</th><th>Generic Go</th><th>Optimized for AMD64</th></tr>
+    <tr><td>Ddot</td><td>2825 ns/op</td><td>895 ns/op</td></tr>
+    <tr><td>Dnrm2</td><td>2787 ns/op</td><td>597 ns/op</td></tr>
+    <tr><td>Dasum</td><td>3145 ns/op</td><td>560 ns/op</td></tr>
+    <tr><td>Sdsdot</td><td>3133 ns/op</td><td>1733 ns/op</td></tr>
+    <tr><td>Sdot</td><td>2832 ns/op</td><td>508 ns/op</td></tr>
+</table>
 
-    blas.BenchmarkDdot	 1000000	      2895 ns/op
-    blas.BenchmarkDnrm2	 1000000	      2745 ns/op
-    blas.BenchmarkDasum	  500000	      3180 ns/op
-
-Optimized AMD64 code:
-
-    blas.BenchmarkDdot	 2000000	       898 ns/op
-    blas.BenchmarkDnrm2	 5000000	       598 ns/op
-    blas.BenchmarkDasum	 5000000	       567 ns/op
+All benchmarks for stride == 1 (there is best optimization in assembler for
+special case: stride == 1). For other stride values optimized code will be
+1.1-1.5 times slower.
 
 #### Implemented functions
 

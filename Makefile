@@ -2,7 +2,8 @@ include $(GOROOT)/src/Make.inc
 
 TARG=blas
 
-OFILES_amd64=\
+_OFILES_amd64=\
+	     sdsdot_amd64.$O\
 	     sdot_amd64.$O\
 	     ddot_amd64.$O\
 	     dnrm2_amd64.$O\
@@ -12,6 +13,7 @@ OFILES=\
 	$(OFILES_$(GOARCH))
 
 ALLGOFILES=\
+	   sdsdot.go\
 	   sdot.go\
 	   ddot.go\
 	   dnrm2.go\

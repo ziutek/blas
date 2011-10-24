@@ -19,6 +19,21 @@ var (
 		1e6, 1e5, 1e4, 1e3, 100, 10, 1}
 )
 
+func TestSdsdot(t *testing.T) {
+	for inc := 1; inc < 9; inc++ {
+		e := float64(0)
+		k := 0
+		for N := 0; N <= len(xf) / inc; N++ {
+			if N > 0 {
+				e += float64(xf[k]) * float64(yf[k])
+				k += inc
+			}
+			r := Sdsdot(N, 10, xf, inc, yf, inc)
+			fCheck(t, inc, N, r, float32(e + 10))
+		}
+	}
+}
+
 func TestSdot(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		e := float32(0)
@@ -73,9 +88,15 @@ func init() {
 	}
 }
 
+func BenchmarkSdsdot(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Sdsdot(len(vf), 10, vf, 1, wf, 1)
+	}
+}
+
 func BenchmarkSdot(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		Sdot(len(vf)/2, vf, 2, wf, 2)
+		Sdot(len(vf), vf, 1, wf, 1)
 	}
 }
 

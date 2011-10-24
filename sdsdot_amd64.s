@@ -1,5 +1,5 @@
-// func Sdot(N int, X []float32, incX int, Y []float32, incY int) float32
-TEXT ·Sdot(SB), 7, $0
+// func Sdsdot(N int, alpha float32, X []float32, incX int, Y []float32, incY int) float32
+TEXT ·Sdsdot(SB), 7, $0
 	MOVL	N+0(FP), BP
 	MOVQ	X_data+8(FP), SI
 	MOVL	incX+24(FP), AX
@@ -18,7 +18,8 @@ TEXT ·Sdot(SB), 7, $0
 	JGE		panic
 
 	// Clear accumulators
-	XORPS	X0, X0
+	XORPD	X0, X0
+	XORPD	X1, X1
 
 	// Setup strides
 	SALQ	$2, AX	// AX = sizeof(float32) * incX
@@ -36,17 +37,31 @@ TEXT ·Sdot(SB), 7, $0
 
 	// Fully optimized loop (for incX == incY == 1)
 	full_simd_loop:
-		// Multiply four pairs
+		// Load four pairs
 		MOVUPS	(SI), X2
 		MOVUPS	(DI), X3
-		MULPS	X2, X3
+
+		// Move two high pairs to low part of another registers
+		MOVHLPS	X2, X4
+		MOVHLPS	X3, X5
+		
+		// Convert to float64
+		CVTPS2PD X2, X2
+		CVTPS2PD X3, X3
+		CVTPS2PD X4, X4
+		CVTPS2PD X5, X5
+
+		// Multiply converted values
+		MULPD	X2, X3
+		MULPD	X4, X5
 
 		// Update data pointers
 		ADDQ	$16, SI
 		ADDQ	$16, DI
 
 		// Accumulate the results of multiplications
-		ADDPS	X3, X0
+		ADDPD	X3, X0
+		ADDPD	X5, X1
 
 		SUBQ	$4, BP
 		JGE		full_simd_loop	// There are 4 or more pairs to process
@@ -57,59 +72,58 @@ with_stride:
 	// Setup long strides
 	MOVQ	AX, CX
 	MOVQ	BX, DX
-	SALQ	$1, CX 	// 8 = 16 * incX
-	SALQ	$1, DX 	// 8 = 16 * incY
+	SALQ	$1, CX 	// CX = 16 * incX
+	SALQ	$1, DX 	// DX = 16 * incY
 
 	// Partially optimized loop
 	half_simd_loop:
 		// Load first two pairs
-		MOVSS	(SI), X2
-		MOVSS	(SI)(AX*1), X4
-		MOVSS	(DI), X3
-		MOVSS	(DI)(BX*1), X5
+		MOVSS		(SI), X2
+		MOVSS		(SI)(AX*1), X6
+		MOVSS		(DI), X3
+		MOVSS		(DI)(BX*1), X7
 
-		// Create two half-vectors
-		UNPCKLPS	X4, X2
-		UNPCKLPS	X5, X3
+		// Convert them to float64 and multiply
+		UNPCKLPS	X6, X2
+		UNPCKLPS	X7, X3
+		CVTPS2PD	X2, X2
+		CVTPS2PD	X3, X3
+		MULPD		X2, X3
 
 		// Update data pointers using long strides
 		ADDQ	CX, SI
 		ADDQ	DX, DI
 
 		// Load second two pairs
-		MOVSS	(SI), X4
-		MOVSS	(SI)(AX*1), X6
-		MOVSS	(DI), X5
-		MOVSS	(DI)(BX*1), X7
+		MOVSS		(SI), X4
+		MOVSS		(SI)(AX*1), X6
+		MOVSS		(DI), X5
+		MOVSS		(DI)(BX*1), X7
 
-		// Create two half-vectors
+		// Convert them to float64 and multiply
 		UNPCKLPS	X6, X4
 		UNPCKLPS	X7, X5
+		CVTPS2PD	X4, X4
+		CVTPS2PD	X5, X5
+		MULPD		X4, X5
 
 		// Update data pointers using long strides
 		ADDQ	CX, SI
 		ADDQ	DX, DI
-		
-		// Create two full-vectors
-		MOVLHPS	X4, X2
-		MOVLHPS	X5, X3
 
-		// Multiply them
-		MULPS	X2, X3
-
-		// Accumulate the result of multiplication
-		ADDPS	X3, X0
+		// Accumulate the results of multiplications
+		ADDPD	X3, X0
+		ADDPD	X5, X1
 
 		SUBQ	$4, BP
 		JGE		half_simd_loop	// There are 4 or more pairs to process
 
 hsum:
+	// Summ intermediate results from SIMD operations
+	ADDPD	X0, X1
 	// Horizontal sum
-	MOVHLPS X0, X3
-	ADDPS	X0, X3
-	MOVSS	X3, X0
-	SHUFPS	$0xe1, X3, X3
-	ADDSS	X3, X0
+	MOVHLPS X1, X0
+	ADDSD	X1, X0
 
 rest:
 	// Undo last SUBQ
@@ -119,23 +133,34 @@ rest:
 	JE	end
 
 	loop:
-		// Multiply one pair
+		// Load one pair
 		MOVSS	(SI), X2
-		MULSS	(DI), X2
+		MOVSS	(DI), X3
+		
+		// Convert them to float64 and multiply
+		CVTSS2SD	X2, X2
+		CVTSS2SD	X3, X3
+		MULSD		X3, X2
 
 		// Update data pointers
 		ADDQ	AX, SI
 		ADDQ	BX,	DI
 
 		// Accumulate the results of multiplication
-		ADDSS	X2, X0
+		ADDSD	X2, X0
 
 		DECQ	BP
 		JNE	loop
 
 end:
-	// Return the sum
-	MOVSS	X0, r+56(FP)
+	// Add alpha
+	MOVSS		N+4(FP), X1
+	CVTSS2SD	X1, X1
+	ADDSD		X1, X0
+
+	// Convert result to float32 and return
+	CVTSD2SS	X0, X0	
+	MOVSS		X0, r+56(FP)
 	RET
 
 panic:

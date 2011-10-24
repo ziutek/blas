@@ -23,7 +23,7 @@ Optimized AMD64 code:
 
 *Level 1*
 
-Ddot, Dnrm2, Dasum
+Sdot, Ddot, Dnrm2, Dasum
 
 *Level 2*
 

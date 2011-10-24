@@ -14,8 +14,9 @@ func fCheck(t *testing.T, inc, N int, r, e float32) {
 }
 
 var (
-	xf = []float32{1, 2, 3, 4, 5, 6, 7, 8}
-	yf = []float32{1e7, 1e6, 1e5, 1e4, 1e3, 100, 10, 1}
+	xf = []float32{1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7}
+	yf = []float32{1e6, 1e5, 1e4, 1e3, 100, 10, 1,
+		1e6, 1e5, 1e4, 1e3, 100, 10, 1}
 )
 
 func TestSdot(t *testing.T) {
@@ -74,7 +75,7 @@ func init() {
 
 func BenchmarkSdot(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		Sdot(len(vf), vf, 1, wf, 1)
+		Sdot(len(vf)/2, vf, 2, wf, 2)
 	}
 }
 

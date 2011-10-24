@@ -4,6 +4,13 @@ TEXT ·Dasum(SB), 7, $0
 	MOVQ	X+8(FP), SI	// X.data
 	MOVL	incX+24(FP), AX
 
+	// Check data bounaries
+	MOVL	BP, CX
+	DECL	CX
+	IMULL	AX, CX	// CX = incX * (N - 1)
+	CMPL	CX, X_len+16(FP)
+	JGE		panic
+
 	// Clear accumulators
 	XORPD	X0, X0
 	XORPD	X1, X1
@@ -13,7 +20,7 @@ TEXT ·Dasum(SB), 7, $0
 	PSRLQ	$1, X3
 
 	// Setup stride
-	SALQ	$3, AX	// AX = 8 * incX
+	SALQ	$3, AX	// AX = sizeof(float64) * incX
 
 	// Check that there are 4 or more values for SIMD calculations
 	SUBQ	$4, BP
@@ -105,4 +112,8 @@ loop:
 end:
 	// Return the square root of sum
 	MOVSD	X0, r+32(FP)
+	RET
+
+panic:
+	CALL	runtime·panicslice(SB)
 	RET

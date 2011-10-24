@@ -3,6 +3,7 @@ include $(GOROOT)/src/Make.inc
 TARG=blas
 
 OFILES_amd64=\
+	     sdot_amd64.$O\
 	     ddot_amd64.$O\
 	     dnrm2_amd64.$O\
 	     dasum_amd64.$O\

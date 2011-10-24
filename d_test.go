@@ -14,8 +14,9 @@ func dCheck(t *testing.T, inc, N int, r, e float64) {
 }
 
 var (
-	xd = []float64{1, 2, 3, 4, 5, 6, 7, 8, 9}
-	yd = []float64{1e8, 1e7, 1e6, 1e5, 1e4, 1e3, 100, 10, 1}
+	xd = []float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	yd = []float64{1e17, 1e16, 1e15, 1e14, 1e13, 1e12, 1e11, 1e10, 1e9, 1e8,
+		1e7, 1e6, 1e5, 1e4, 1e3, 100, 10, 1}
 )
 
 func TestDdot(t *testing.T) {

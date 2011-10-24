@@ -17,14 +17,14 @@ Any implemented function has its own unity test and benchmark.
 </table>
 
 All benchmarks for stride == 1 (there is best optimization in assembler for
-special case: stride == 1). For other stride values optimized code will be
-1.1-1.5 times slower.
+this special case). For other stride values optimized code will be 1.1-1.5
+times slower.
 
 #### Implemented functions
 
 *Level 1*
 
-Sdot, Ddot, Dnrm2, Dasum
+Sdsdot, Sdot, Ddot, Dnrm2, Dasum
 
 *Level 2*
 

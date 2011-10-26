@@ -9,10 +9,9 @@ func Dasum(N int, X []float64, incX int) float64 {
 	for ; N > 0; N-- {
 		x := X[xi]
 		if x < 0 {
-			a -= x
-		} else {
-			a += x
+			x = -x
 		}
+		a += x
 		xi += incX
 	}
 	return a

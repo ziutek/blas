@@ -1,8 +1,5 @@
 package blas
 
-// Largest element of the vector X
-//func Idamax(N int, X []float64, incX int) float64
-
 // Exchange the elements of the vectors Y and Y
 //func Dswap(N int, X []float64, incX int, Y []float64, incY int)
 

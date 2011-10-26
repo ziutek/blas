@@ -13,12 +13,14 @@ OFILES=\
 	$(OFILES_$(GOARCH))
 
 ALLGOFILES=\
+	   common.go\
 	   sdsdot.go\
 	   sdot.go\
 	   ddot.go\
 	   dnrm2.go\
 	   dasum.go\
 	   idamax.go\
+	   dswap.go\
 
 NOGOFILES=\
 	$(subst _$(GOARCH).$O,.go,$(OFILES_$(GOARCH)))

@@ -115,7 +115,7 @@ rest:
 	// Undo last SUBQ
 	ADDQ	$4,	BP
 
-	// Check that are there any pair to process
+	// Check that are there any value to process
 	JE	end
 
 	loop:

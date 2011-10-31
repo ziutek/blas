@@ -1,4 +1,4 @@
-// func Dnrm2(N int, X []float64, incX int) float64
+// func Dasum(N int, X []float64, incX int) float64
 TEXT ·Dasum(SB), 7, $0
 	MOVL	N+0(FP), BP
 	MOVQ	X+8(FP), SI	// X.data

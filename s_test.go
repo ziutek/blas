@@ -3,7 +3,7 @@ package blas
 import (
 	"testing"
 	"rand"
-//	"math"
+	"math"
 )
 
 func fCheck(t *testing.T, inc, N int, r, e float32) {
@@ -49,11 +49,11 @@ func TestSdot(t *testing.T) {
 	}
 }
 
-/*
+
 func TestSnrm2(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		for N := 0; N <= len(xf) / inc; N++ {
-			e := math.Sqrt(Sdot(N, xf, inc, xf, inc))
+			e := float32(math.Sqrt(float64(Sdot(N, xf, inc, xf, inc))))
 			r := Snrm2(N, xf, inc)
 			fCheck(t, inc, N, r, e)
 		}
@@ -63,11 +63,11 @@ func TestSnrm2(t *testing.T) {
 func TestSasum(t *testing.T) {
 	xf := []float32{-1, -2, 3, -4, -5, -6, 7, -8, 9}
 	for inc := 1; inc < 9; inc++ {
-		e := 0.0
+		e := float32(0)
 		k := 0
 		for N := 0; N <= len(xf) / inc; N++ {
 			if N > 0 {
-				e += math.Abs(xf[k])
+				e += float32(math.Abs(float64(xf[k])))
 				k += inc
 			}
 			r := Sasum(N, xf, inc)
@@ -75,7 +75,6 @@ func TestSasum(t *testing.T) {
 		}
 	}
 }
-*/
 
 var vf, wf []float32
 
@@ -100,16 +99,16 @@ func BenchmarkSdot(b *testing.B) {
 	}
 }
 
-/*
+
 func BenchmarkSnrm2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		Snrm2(len(vf), vf, 1)
 	}
 }
 
+
 func BenchmarkSasum(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		Sasum(len(vf), vf, 1)
 	}
 }
-*/

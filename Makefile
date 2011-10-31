@@ -7,7 +7,9 @@ OFILES_amd64=\
 	     sdsdot_amd64.$O\
 	     sdot_amd64.$O\
 	     ddot_amd64.$O\
+	     snrm2_amd64.$O\
 	     dnrm2_amd64.$O\
+	     sasum_amd64.$O\
 	     dasum_amd64.$O\
 	     dswap_amd64.$O\
 
@@ -19,7 +21,9 @@ ALLGOFILES=\
 	   sdsdot.go\
 	   sdot.go\
 	   ddot.go\
+	   snrm2.go\
 	   dnrm2.go\
+	   sasum.go\
 	   dasum.go\
 	   idamax.go\
 	   dswap.go\

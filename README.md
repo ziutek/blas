@@ -9,7 +9,7 @@ Any implemented function has its own unity test and benchmark.
 
 *Level 1*
 
-Sdsdot, Sdot, Ddot, Dnrm2, Dasum
+Sdsdot, Sdot, Ddot, Snrm2, Dnrm2, Sasum, Dasum, Dswap
 
 *Level 2*
 

@@ -1,7 +1,7 @@
 ### Go implementation of BLAS (Basic Linear Algebra Subprograms)
 
 Any function is implemented in generic Go and if it is justified, it is
-optimized for AMD64 (using SSE2 SIMD instructions).
+optimized for AMD64 (using SSE2 instructions).
 
 Any implemented function has its own unity test and benchmark.
 
@@ -9,7 +9,7 @@ Any implemented function has its own unity test and benchmark.
 
 *Level 1*
 
-Sdsdot, Sdot, Ddot, Snrm2, Dnrm2, Sasum, Dasum, Dswap
+Sdsdot, Sdot, Ddot, Snrm2, Dnrm2, Sasum, Dasum, Isamax, Idamax, Sswap, Dswap
 
 *Level 2*
 
@@ -29,10 +29,6 @@ not implemented
     <tr><td>Sdsdot</td><td>3133 ns/op</td><td>1733 ns/op</td></tr>
     <tr><td>Sdot</td><td>2832 ns/op</td><td>508 ns/op</td></tr>
 </table>
-
-All benchmarks for stride == 1 (there is best optimization in assembler for
-this special case). For other stride values optimized code will be 1.1-1.5
-times slower.
 
 #### Documentation
 

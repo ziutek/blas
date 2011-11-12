@@ -75,6 +75,26 @@ func TestSasum(t *testing.T) {
 	}
 }
 
+func TestIsamax(t *testing.T) {
+	xf := []float32{-1, -2, 3, -4, -5, 0, -5, 0, 4, 2, 3, -1, 4, -2, -9, 0,
+		-1, 0, 0, 2, 2, -8, 2, 1, 0, 2, 4, 5, 8, 1, -7, 2, 9, 0, 1, -1 }
+	for inc := 1; inc < 9; inc++ {
+		for N := 0; N <= len(xf)/inc; N++ {
+			i_max := 0
+			x_max := float32(0.0)
+			for i := 0; i < N; i++ {
+				x := float32(math.Abs(float64(xf[i*inc])))
+				if x > x_max {
+					x_max = x
+					i_max = i
+				}
+			}
+			r := Isamax(N, xf, inc)
+			iCheck(t, inc, N, r, i_max)
+		}
+	}
+}
+
 func TestSswap(t *testing.T) {
 	a := make([]float32, len(xf))
 	b := make([]float32, len(yf))
@@ -130,6 +150,12 @@ func BenchmarkSnrm2(b *testing.B) {
 func BenchmarkSasum(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		Sasum(len(vf), vf, 1)
+	}
+}
+
+func BenchmarkIsamax(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Isamax(len(vf), vf, 1)
 	}
 }
 

@@ -68,7 +68,8 @@ func TestDasum(t *testing.T) {
 }
 
 func TestIdamax(t *testing.T) {
-	xd := []float64{-1, -2, 3, -4, -5, 0, -5, 0, 4, 2, 3, -1, 4, 2, -9, 0}
+	xd := []float64{-1, -2, 3, -4, -5, 0, -5, 0, 4, 2, 3, -1, 4, -2, -9, 0,
+		-1, 0, 0, 2, 2, -8, 2, 1, 0, 2, 4, 5, 8, 1, -7, 2, 9, 0, 1, -1 }
 	for inc := 1; inc < 9; inc++ {
 		for N := 0; N <= len(xd)/inc; N++ {
 			i_max := 0

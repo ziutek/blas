@@ -101,7 +101,6 @@ loop:
 
 	// Update data pointers
 	ADDQ	AX, SI
-	ADDQ	BX,	DI
 
 	// Accumulate the results of multiplication
 	ADDSD	X2, X0

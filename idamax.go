@@ -6,7 +6,7 @@ func Idamax(N int, X []float64, incX int) int {
 		max_x float64
 		xi int
 	)
-	max_n := -1
+	max_n := 0
 	for n := 0; n < N; n++ {
 		x := X[xi]
 		if x < 0 {

@@ -1,6 +1,7 @@
 include $(GOROOT)/src/Make.inc
 
 GC = $Og -N
+#GC = $Og -B
 TARG=blas
 
 OFILES_amd64=\
@@ -11,6 +12,8 @@ OFILES_amd64=\
 	     dnrm2_amd64.$O\
 	     sasum_amd64.$O\
 	     dasum_amd64.$O\
+	     idamax_amd64.$O\
+	     sswap_amd64.$O\
 	     dswap_amd64.$O\
 
 OFILES=\
@@ -26,6 +29,7 @@ ALLGOFILES=\
 	   sasum.go\
 	   dasum.go\
 	   idamax.go\
+	   sswap.go\
 	   dswap.go\
 
 NOGOFILES=\

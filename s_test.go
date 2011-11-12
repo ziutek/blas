@@ -1,9 +1,9 @@
 package blas
 
 import (
-	"testing"
-	"rand"
 	"math"
+	"math/rand"
+	"testing"
 )
 
 func fCheck(t *testing.T, inc, N int, r, e float32) {
@@ -23,13 +23,13 @@ func TestSdsdot(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		e := float64(0)
 		k := 0
-		for N := 0; N <= len(xf) / inc; N++ {
+		for N := 0; N <= len(xf)/inc; N++ {
 			if N > 0 {
 				e += float64(xf[k]) * float64(yf[k])
 				k += inc
 			}
 			r := Sdsdot(N, 10, xf, inc, yf, inc)
-			fCheck(t, inc, N, r, float32(e + 10))
+			fCheck(t, inc, N, r, float32(e+10))
 		}
 	}
 }
@@ -38,7 +38,7 @@ func TestSdot(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		e := float32(0)
 		k := 0
-		for N := 0; N <= len(xf) / inc; N++ {
+		for N := 0; N <= len(xf)/inc; N++ {
 			if N > 0 {
 				e += xf[k] * yf[k]
 				k += inc
@@ -49,10 +49,9 @@ func TestSdot(t *testing.T) {
 	}
 }
 
-
 func TestSnrm2(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
-		for N := 0; N <= len(xf) / inc; N++ {
+		for N := 0; N <= len(xf)/inc; N++ {
 			e := float32(math.Sqrt(float64(Sdot(N, xf, inc, xf, inc))))
 			r := Snrm2(N, xf, inc)
 			fCheck(t, inc, N, r, e)
@@ -65,13 +64,36 @@ func TestSasum(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		e := float32(0)
 		k := 0
-		for N := 0; N <= len(xf) / inc; N++ {
+		for N := 0; N <= len(xf)/inc; N++ {
 			if N > 0 {
 				e += float32(math.Abs(float64(xf[k])))
 				k += inc
 			}
 			r := Sasum(N, xf, inc)
 			fCheck(t, inc, N, r, e)
+		}
+	}
+}
+
+func TestSswap(t *testing.T) {
+	a := make([]float32, len(xf))
+	b := make([]float32, len(yf))
+	for inc := 1; inc < 9; inc++ {
+		for N := 0; N <= len(xf)/inc; N++ {
+			copy(a, xf)
+			copy(b, yf)
+			Sswap(N, a, inc, b, inc)
+			for i := 0; i < len(a); i++ {
+				if i <= inc*(N-1) && i%inc == 0 {
+					if a[i] != yf[i] || b[i] != xf[i] {
+						t.Fatalf("inc=%d N=%d", inc, N)
+					}
+				} else {
+					if a[i] != xf[i] || b[i] != yf[i] {
+						t.Fatalf("inc=%d N=%d", inc, N)
+					}
+				}
+			}
 		}
 	}
 }
@@ -99,16 +121,24 @@ func BenchmarkSdot(b *testing.B) {
 	}
 }
 
-
 func BenchmarkSnrm2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		Snrm2(len(vf), vf, 1)
 	}
 }
 
-
 func BenchmarkSasum(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		Sasum(len(vf), vf, 1)
+	}
+}
+
+func BenchmarkSswap(b *testing.B) {
+	b.StopTimer()
+	x := make([]float32, len(vd))
+	y := make([]float32, len(vd))
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		Sswap(len(x), x, 1, y, 1)
 	}
 }

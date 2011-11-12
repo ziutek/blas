@@ -1,9 +1,9 @@
 package blas
 
 import (
-	"testing"
-	"rand"
 	"math"
+	"math/rand"
+	"testing"
 )
 
 func iCheck(t *testing.T, inc, N, r, e int) {
@@ -30,7 +30,7 @@ func TestDdot(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		e := 0.0
 		k := 0
-		for N := 0; N <= len(xd) / inc; N++ {
+		for N := 0; N <= len(xd)/inc; N++ {
 			if N > 0 {
 				e += xd[k] * yd[k]
 				k += inc
@@ -43,7 +43,7 @@ func TestDdot(t *testing.T) {
 
 func TestDnrm2(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
-		for N := 0; N <= len(xd) / inc; N++ {
+		for N := 0; N <= len(xd)/inc; N++ {
 			e := math.Sqrt(Ddot(N, xd, inc, xd, inc))
 			r := Dnrm2(N, xd, inc)
 			dCheck(t, inc, N, r, e)
@@ -56,7 +56,7 @@ func TestDasum(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		e := 0.0
 		k := 0
-		for N := 0; N <= len(xd) / inc; N++ {
+		for N := 0; N <= len(xd)/inc; N++ {
 			if N > 0 {
 				e += math.Abs(xd[k])
 				k += inc
@@ -68,13 +68,13 @@ func TestDasum(t *testing.T) {
 }
 
 func TestIdamax(t *testing.T) {
-	xd := []float64{-1, -2, 3, -4, -5, 0, -5, 0, 4, 2, 3, -1, 4, 2}
+	xd := []float64{-1, -2, 3, -4, -5, 0, -5, 0, 4, 2, 3, -1, 4, 2, -9, 0}
 	for inc := 1; inc < 9; inc++ {
-		for N := 0; N <= len(xd) / inc; N++ {
-			i_max := -1
+		for N := 0; N <= len(xd)/inc; N++ {
+			i_max := 0
 			x_max := 0.0
 			for i := 0; i < N; i++ {
-				x := math.Abs(xd[i * inc])
+				x := math.Abs(xd[i*inc])
 				if x > x_max {
 					x_max = x
 					i_max = i
@@ -90,12 +90,12 @@ func TestDswap(t *testing.T) {
 	a := make([]float64, len(xd))
 	b := make([]float64, len(yd))
 	for inc := 1; inc < 9; inc++ {
-		for N := 0; N <= len(xd) / inc; N++ {
+		for N := 0; N <= len(xd)/inc; N++ {
 			copy(a, xd)
 			copy(b, yd)
 			Dswap(N, a, inc, b, inc)
 			for i := 0; i < len(a); i++ {
-				if i <= inc * (N-1) && i % inc == 0 {
+				if i <= inc*(N-1) && i%inc == 0 {
 					if a[i] != yd[i] || b[i] != xd[i] {
 						t.Fatalf("inc=%d N=%d", inc, N)
 					}

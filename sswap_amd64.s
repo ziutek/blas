@@ -1,8 +1,5 @@
-// 6g -B: 1926 ns/op, 6a MOVUPD: 2397 ns/op, 6a MOVAPD: 474 ns/op
-// MOVUPD is very inefficient on my U4100. Can it work better on other CPU?
-
-// func Dswap(N int, X []float64, incX int, Y []float64, incY int)
-TEXT ·Dswap(SB), 7, $0
+// func Sswap(N int, X []float32, incX int, Y []float32, incY int)
+TEXT ·Sswap(SB), 7, $0
 	MOVL	N+0(FP), BP
 	MOVQ	X_data+8(FP), SI
 	MOVL	incX+24(FP), AX
@@ -21,36 +18,32 @@ TEXT ·Dswap(SB), 7, $0
 	JGE		panic
 
 	// Setup strides
-	SALQ	$3, AX	// AX = sizeof(float64) * incX
-	SALQ	$3, BX	// BX = sizeof(float64) * incY
+	SALQ	$2, AX	// AX = sizeof(float32) * incX
+	SALQ	$2, BX	// BX = sizeof(float32) * incY
 
 	// Check that there are 4 or more pairs for SIMD calculations
 	SUBQ	$4, BP
 	JL		rest	// There are less than 4 pairs to process
 
 	// Check if incX != 1 or incY != 1
-	CMPQ	AX, $8
+	CMPQ	AX, $4
 	JNE	with_stride
-	CMPQ	BX, $8
+	CMPQ	BX, $4
 	JNE	with_stride
 
 	// Fully optimized loop (for incX == incY == 1)
 	full_simd_loop:
 		// Load four values from X
-		MOVUPD	(SI), X0
-		MOVUPD	16(SI), X1
+		MOVUPS	(SI), X0
 		// Load four values from Y
-		MOVUPD	(DI), X2
-		MOVUPD	16(DI), X3
+		MOVUPS	(DI), X2
 		// Save them
-		MOVUPD	X0, (DI)
-		MOVUPD	X1, 16(DI)
-		MOVUPD	X2, (SI)
-		MOVUPD	X3, 16(SI)
+		MOVUPS	X0, (DI)
+		MOVUPS	X2, (SI)
 
 		// Update data pointers
-		ADDQ	$32, SI
-		ADDQ	$32, DI
+		ADDQ	$16, SI
+		ADDQ	$16, DI
 
 		SUBQ	$4, BP
 		JGE		full_simd_loop	// There are 4 or more pairs to process
@@ -61,38 +54,38 @@ with_stride:
 	// Setup long strides
 	MOVQ	AX, CX
 	MOVQ	BX, DX
-	SALQ	$1, CX 	// CX = 16 * incX
-	SALQ	$1, DX 	// DX = 16 * incY
+	SALQ	$1, CX 	// CX = 8 * incX
+	SALQ	$1, DX 	// DX = 8 * incY
 
 	// Partially optimized loop
 	half_simd_loop:
 		// Load two values from X
-		MOVSD	(SI), X0
-		MOVSD	(SI)(AX*1), X1
+		MOVSS	(SI), X0
+		MOVSS	(SI)(AX*1), X1
 		// Load two values from Y
-		MOVSD	(DI), X2
-		MOVSD	(DI)(BX*1), X3
+		MOVSS	(DI), X2
+		MOVSS	(DI)(BX*1), X3
 		// Save them
-		MOVSD	X0, (DI)
-		MOVSD	X1, (DI)(BX*1)
-		MOVSD	X2, (SI)
-		MOVSD	X3, (SI)(AX*1)
+		MOVSS	X0, (DI)
+		MOVSS	X1, (DI)(BX*1)
+		MOVSS	X2, (SI)
+		MOVSS	X3, (SI)(AX*1)
 
 		// Update data pointers using long strides
 		ADDQ	CX, SI
 		ADDQ	DX, DI
 
 		// Load two values from X
-		MOVSD	(SI), X0
-		MOVSD	(SI)(AX*1), X1
+		MOVSS	(SI), X0
+		MOVSS	(SI)(AX*1), X1
 		// Load two values from Y
-		MOVSD	(DI), X2
-		MOVSD	(DI)(BX*1), X3
+		MOVSS	(DI), X2
+		MOVSS	(DI)(BX*1), X3
 		// Save them
-		MOVSD	X0, (DI)
-		MOVSD	X1, (DI)(BX*1)
-		MOVSD	X2, (SI)
-		MOVSD	X3, (SI)(AX*1)
+		MOVSS	X0, (DI)
+		MOVSS	X1, (DI)(BX*1)
+		MOVSS	X2, (SI)
+		MOVSS	X3, (SI)(AX*1)
 
 		// Update data pointers using long strides
 		ADDQ	CX, SI
@@ -110,11 +103,11 @@ rest:
 
 	loop:
 		// Load values from X and Y
-		MOVSD	(SI), X0
-		MOVSD	(DI), X1
+		MOVSS	(SI), X0
+		MOVSS	(DI), X1
 		// Save them
-		MOVSD	X0, (DI)
-		MOVSD	X1, (SI)
+		MOVSS	X0, (DI)
+		MOVSS	X1, (SI)
 
 		// Update data pointers
 		ADDQ	AX, SI

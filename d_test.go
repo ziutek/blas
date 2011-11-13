@@ -174,6 +174,7 @@ func BenchmarkDswap(b *testing.B) {
 		Dswap(len(x), x, 1, y, 1)
 	}
 }
+
 func BenchmarkDcopy(b *testing.B) {
 	b.StopTimer()
 	y := make([]float64, len(vd))

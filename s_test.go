@@ -118,6 +118,27 @@ func TestSswap(t *testing.T) {
 	}
 }
 
+func TestScopy(t *testing.T) {
+	for inc := 1; inc < 9; inc++ {
+		for N := 0; N <= len(xf)/inc; N++ {
+			a := make([]float32, len(xf))
+			Scopy(N, xf, inc, a, inc)
+			for i := 0; i < inc * N; i++ {
+				if i % inc == 0 {
+					if a[i] != xf[i] {
+						t.Fatalf("inc=%d N=%d i=%d r=%f e=%f", inc, N, i, a[i], xd[i])
+					}
+				} else {
+					if a[i] != 0 {
+						t.Fatalf("inc=%d N=%d i=%d r=%f e=0", inc, N, i, a[i])
+					}
+				}
+			}
+		}
+	}
+}
+
+
 var vf, wf []float32
 
 func init() {
@@ -166,5 +187,14 @@ func BenchmarkSswap(b *testing.B) {
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		Sswap(len(x), x, 1, y, 1)
+	}
+}
+
+func BenchmarkScopy(b *testing.B) {
+	b.StopTimer()
+	y := make([]float32, len(vf))
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		Scopy(len(vf), vf, 1, y, 1)
 	}
 }

@@ -1,7 +1,7 @@
 include $(GOROOT)/src/Make.inc
 
-GC = $Og -N
-#GC = $Og -B
+#GC = $Og -N
+GC = $Og -B
 TARG=blas
 
 OFILES_amd64=\
@@ -37,6 +37,8 @@ ALLGOFILES=\
 	   dswap.go\
 	   scopy.go\
 	   dcopy.go\
+	   saxpy.go\
+	   daxpy.go\
 
 NOGOFILES=\
 	$(subst _$(GOARCH).$O,.go,$(OFILES_$(GOARCH)))

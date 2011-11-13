@@ -183,3 +183,11 @@ func BenchmarkDcopy(b *testing.B) {
 		Dcopy(len(vd), vd, 1, y, 1)
 	}
 }
+func BenchmarkDaxpy(b *testing.B) {
+	b.StopTimer()
+	y := make([]float64, len(vd))
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		Daxpy(len(vd), -1.0, vd, 1, y, 1)
+	}
+}

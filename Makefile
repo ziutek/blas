@@ -16,6 +16,7 @@ OFILES_amd64=\
 	     idamax_amd64.$O\
 	     sswap_amd64.$O\
 	     dswap_amd64.$O\
+	     dcopy_amd64.$O\
 
 OFILES=\
 	$(OFILES_$(GOARCH))
@@ -33,6 +34,7 @@ ALLGOFILES=\
 	   idamax.go\
 	   sswap.go\
 	   dswap.go\
+	   dcopy.go\
 
 NOGOFILES=\
 	$(subst _$(GOARCH).$O,.go,$(OFILES_$(GOARCH)))

@@ -110,6 +110,26 @@ func TestDswap(t *testing.T) {
 	}
 }
 
+func TestDcopy(t *testing.T) {
+	for inc := 1; inc < 9; inc++ {
+		for N := 0; N <= len(xd)/inc; N++ {
+			a := make([]float64, len(xd))
+			Dcopy(N, xd, inc, a, inc)
+			for i := 0; i < inc * N; i++ {
+				if i % inc == 0 {
+					if a[i] != xd[i] {
+						t.Fatalf("inc=%d N=%d i=%d r=%f e=%f", inc, N, i, a[i], xd[i])
+					}
+				} else {
+					if a[i] != 0 {
+						t.Fatalf("inc=%d N=%d i=%d r=%f e=0", inc, N, i, a[i])
+					}
+				}
+			}
+		}
+	}
+}
+
 var vd, wd []float64
 
 func init() {
@@ -152,5 +172,13 @@ func BenchmarkDswap(b *testing.B) {
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		Dswap(len(x), x, 1, y, 1)
+	}
+}
+func BenchmarkDcopy(b *testing.B) {
+	b.StopTimer()
+	y := make([]float64, len(vd))
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		Dcopy(len(vd), vd, 1, y, 1)
 	}
 }

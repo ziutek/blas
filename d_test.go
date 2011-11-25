@@ -175,6 +175,56 @@ func TestDscal(t *testing.T) {
 	}
 }
 
+func dEq(a, b float64) bool {
+	return math.Abs(a - b) < 1.0/(1 << 32)
+}
+
+func drotg(a, b float64) (c, s, r, z float64) {
+	roe := b
+	if math.Abs(a) > math.Abs(b) {
+		roe = a
+	}
+	scale := math.Abs(a) + math.Abs(b)
+	if scale == 0 {
+		c = 1
+	} else {
+		r = scale * math.Sqrt((a/scale)*(a/scale)+(b/scale)*(b/scale))
+		if math.Signbit(roe) {
+			r = -r
+		}
+		c = a / r
+		s = b / r
+		z = 1
+		if math.Abs(a) > math.Abs(b) {
+			z = s
+		}
+		if math.Abs(b) >= math.Abs(a) && c != 0 {
+			z = 1 / c
+		}
+	}
+	return
+}
+
+func TestDrotg(t *testing.T) {
+	vs := []struct{a, b float64}{
+		{0, 0}, {0, 1}, {0, -1},
+		{1, 0}, {1, 1}, {1, -1},
+		{-1, 0}, {-1, 1}, {-1, -1},
+		{2, 0}, {2, 1}, {2, -1},
+		{-2, 0}, {-2, 1}, {-2, -1},
+		{0, 2}, {1, 2}, {-1, 2},
+		{0, -2}, {1, -2}, {-1, 2},
+	}
+	for _, v := range vs {
+		c, s, _, _ := Drotg(v.a, v.b)
+		ec, es, _, _ := drotg(v.a, v.b)
+		if !dEq(c, ec) || !dEq(s, es) {
+			t.Fatalf("a=%f b=%f c=%f s=%f", v.a, v.b, c, s)
+		}
+	}
+}
+
+
 var vd, wd []float64
 
 func init() {
@@ -237,6 +287,7 @@ func BenchmarkDaxpy(b *testing.B) {
 		Daxpy(len(vd), -1.0, vd, 1, y, 1)
 	}
 }
+
 func BenchmarkDscal(b *testing.B) {
 	b.StopTimer()
 	y := make([]float64, len(vd))
@@ -244,5 +295,19 @@ func BenchmarkDscal(b *testing.B) {
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		Dscal(len(y), -1.0, y, 1)
+	}
+}
+
+func BenchmarkDrotg(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Drotg(0, 0)
+		Drotg(0, 1)
+		Drotg(0, -1)
+		Drotg(1, 0)
+		Drotg(1, 1)
+		Drotg(1, -1)
+		Drotg(-1, 0)
+		Drotg(-1, 1)
+		Drotg(-1, -1)
 	}
 }

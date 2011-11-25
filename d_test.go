@@ -153,6 +153,28 @@ func TestDaxpy(t *testing.T) {
 	}
 }
 
+func TestDscal(t *testing.T) {
+	alpha := 3.0
+	for inc := 1; inc < 9; inc++ {
+		for N := 0; N <= len(xd)/inc; N++ {
+			r := make([]float64, len(xd))
+			e := make([]float64, len(xd))
+			copy(r, xd)
+			copy(e, xd)
+			Dscal(N, alpha, r, inc)
+			for i := 0; i < N; i++ {
+				e[i*inc] = alpha * xd[i*inc]
+			}
+			for i := 0; i < len(xd); i++ {
+				if r[i] != e[i] {
+					t.Fatalf("inc=%d N=%d i=%d r=%f e=%f", inc, N, i, r[i],
+						e[i])
+				}
+			}
+		}
+	}
+}
+
 var vd, wd []float64
 
 func init() {
@@ -213,5 +235,14 @@ func BenchmarkDaxpy(b *testing.B) {
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		Daxpy(len(vd), -1.0, vd, 1, y, 1)
+	}
+}
+func BenchmarkDscal(b *testing.B) {
+	b.StopTimer()
+	y := make([]float64, len(vd))
+	copy(y, vd)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		Dscal(len(y), -1.0, y, 1)
 	}
 }

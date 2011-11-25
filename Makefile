@@ -20,6 +20,8 @@ OFILES_amd64=\
 	     dcopy_amd64.$O\
 	     saxpy_amd64.$O\
 	     daxpy_amd64.$O\
+	     sscal_amd64.$O\
+	     dscal_amd64.$O\
 
 OFILES=\
 	$(OFILES_$(GOARCH))
@@ -41,6 +43,8 @@ ALLGOFILES=\
 	   dcopy.go\
 	   saxpy.go\
 	   daxpy.go\
+	   sscal.go\
+	   dscal.go\
 
 NOGOFILES=\
 	$(subst _$(GOARCH).$O,.go,$(OFILES_$(GOARCH)))

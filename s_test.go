@@ -161,6 +161,28 @@ func TestSaxpy(t *testing.T) {
 	}
 }
 
+func TestSscal(t *testing.T) {
+	alpha := float32(3.0)
+	for inc := 1; inc < 9; inc++ {
+		for N := 0; N <= len(xf)/inc; N++ {
+			r := make([]float32, len(xf))
+			e := make([]float32, len(xf))
+			copy(r, xf)
+			copy(e, xf)
+			Sscal(N, alpha, r, inc)
+			for i := 0; i < N; i++ {
+				e[i*inc] = alpha * xf[i*inc]
+			}
+			for i := 0; i < len(xf); i++ {
+				if r[i] != e[i] {
+					t.Fatalf("inc=%d N=%d i=%d r=%f e=%f", inc, N, i, r[i],
+						e[i])
+				}
+			}
+		}
+	}
+}
+
 var vf, wf []float32
 
 func init() {
@@ -227,5 +249,15 @@ func BenchmarkSaxpy(b *testing.B) {
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		Saxpy(len(vf), -1.0, vf, 1, y, 1)
+	}
+}
+
+func BenchmarkSscal(b *testing.B) {
+	b.StopTimer()
+	y := make([]float32, len(vf))
+	copy(y, vf)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		Sscal(len(y), -1.0, y, 1)
 	}
 }

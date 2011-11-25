@@ -69,7 +69,7 @@ func TestDasum(t *testing.T) {
 
 func TestIdamax(t *testing.T) {
 	xd := []float64{-1, -2, 3, -4, -5, 0, -5, 0, 4, 2, 3, -1, 4, -2, -9, 0,
-		-1, 0, 0, 2, 2, -8, 2, 1, 0, 2, 4, 5, 8, 1, -7, 2, 9, 0, 1, -1 }
+		-1, 0, 0, 2, 2, -8, 2, 1, 0, 2, 4, 5, 8, 1, -7, 2, 9, 0, 1, -1}
 	for inc := 1; inc < 9; inc++ {
 		for N := 0; N <= len(xd)/inc; N++ {
 			i_max := 0
@@ -115,15 +115,38 @@ func TestDcopy(t *testing.T) {
 		for N := 0; N <= len(xd)/inc; N++ {
 			a := make([]float64, len(xd))
 			Dcopy(N, xd, inc, a, inc)
-			for i := 0; i < inc * N; i++ {
-				if i % inc == 0 {
+			for i := 0; i < inc*N; i++ {
+				if i%inc == 0 {
 					if a[i] != xd[i] {
-						t.Fatalf("inc=%d N=%d i=%d r=%f e=%f", inc, N, i, a[i], xd[i])
+						t.Fatalf("inc=%d N=%d i=%d r=%f e=%f", inc, N, i, a[i],
+							xd[i])
 					}
 				} else {
 					if a[i] != 0 {
 						t.Fatalf("inc=%d N=%d i=%d r=%f e=0", inc, N, i, a[i])
 					}
+				}
+			}
+		}
+	}
+}
+
+func TestDaxpy(t *testing.T) {
+	alpha := 3.0
+	for inc := 1; inc < 9; inc++ {
+		for N := 0; N <= len(xd)/inc; N++ {
+			r := make([]float64, len(xd))
+			e := make([]float64, len(xd))
+			copy(r, xd)
+			copy(e, xd)
+			Daxpy(N, alpha, xd, inc, r, inc)
+			for i := 0; i < N; i++ {
+				e[i*inc] += alpha * xd[i*inc]
+			}
+			for i := 0; i < len(xd); i++ {
+				if r[i] != e[i] {
+					t.Fatalf("inc=%d N=%d i=%d r=%f e=%f", inc, N, i, r[i],
+						e[i])
 				}
 			}
 		}
@@ -183,6 +206,7 @@ func BenchmarkDcopy(b *testing.B) {
 		Dcopy(len(vd), vd, 1, y, 1)
 	}
 }
+
 func BenchmarkDaxpy(b *testing.B) {
 	b.StopTimer()
 	y := make([]float64, len(vd))

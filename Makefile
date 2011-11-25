@@ -18,6 +18,8 @@ OFILES_amd64=\
 	     dswap_amd64.$O\
 	     scopy_amd64.$O\
 	     dcopy_amd64.$O\
+	     saxpy_amd64.$O\
+	     daxpy_amd64.$O\
 
 OFILES=\
 	$(OFILES_$(GOARCH))

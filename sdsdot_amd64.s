@@ -154,7 +154,7 @@ rest:
 
 end:
 	// Add alpha
-	MOVSS		N+4(FP), X1
+	MOVSS		alpha+4(FP), X1
 	CVTSS2SD	X1, X1
 	ADDSD		X1, X0
 

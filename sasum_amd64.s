@@ -103,7 +103,7 @@ rest:
 	loop:
 		// Multiply one value
 		MOVSS	(SI), X1
-		ANDPD	X4, X1
+		ANDPS	X4, X1
 
 		// Update data pointers
 		ADDQ	AX, SI

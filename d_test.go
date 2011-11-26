@@ -179,6 +179,7 @@ func dEq(a, b float64) bool {
 	return math.Abs(a - b) < 1.0/(1 << 32)
 }
 
+// Reference implementation of Drotg
 func drotg(a, b float64) (c, s, r, z float64) {
 	roe := b
 	if math.Abs(a) > math.Abs(b) {

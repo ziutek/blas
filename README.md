@@ -10,7 +10,7 @@ Any implemented function has its own unity test and benchmark.
 *Level 1*
 
 Sdsdot, Sdot, Ddot, Snrm2, Dnrm2, Sasum, Dasum, Isamax, Idamax, Sswap, Dswap,
-Scopy, Dcopy, Saxpy, Daxpy, Sscal, Dscal
+Scopy, Dcopy, Saxpy, Daxpy, Sscal, Dscal, Drotg
 
 *Level 2*
 

@@ -22,7 +22,7 @@ OFILES_amd64=\
 	     daxpy_amd64.$O\
 	     sscal_amd64.$O\
 	     dscal_amd64.$O\
-	     #drotg_amd64.$O\
+	     drotg_amd64.$O\
 
 OFILES=\
 	$(OFILES_$(GOARCH))

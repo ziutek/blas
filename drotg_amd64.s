@@ -1,7 +1,7 @@
 // func Drotg(a, b float64) (c, s, r, z float64)
 TEXT ·Drotg(SB), 7, $0
-	MOVSD   a+0(FP),X0
-	MOVSD   b+8(FP),X1
+	MOVSD   a+0(FP), X0
+	MOVSD   b+8(FP), X1
 
 	// Setup mask for sign bit clear
 	PCMPEQL	X6, X6
@@ -81,7 +81,7 @@ abs_a_LE_abs_b:
 	UCOMISD	X8, X1
 	JE	end
 
-	DIVSD	X1, X4
+	DIVSD	X1, X4	// z /= c
 
 end:
 	MOVSD	X4, z+40(FP)

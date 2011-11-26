@@ -225,7 +225,6 @@ func TestDrotg(t *testing.T) {
 	}
 }
 
-
 var vd, wd []float64
 
 func init() {

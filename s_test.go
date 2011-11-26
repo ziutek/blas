@@ -6,6 +6,14 @@ import (
 	"testing"
 )
 
+func fabs(f float32) float32 {
+	return float32(math.Abs(float64(f)))
+}
+
+func fsqrt(f float32) float32 {
+	return float32(math.Sqrt(float64(f)))
+}
+
 func fCheck(t *testing.T, inc, N int, r, e float32) {
 	t.Logf("inc=%d N=%d : r=%f e=%f e-r=%g", inc, N, r, e, e-r)
 	if r != e {
@@ -52,7 +60,7 @@ func TestSdot(t *testing.T) {
 func TestSnrm2(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		for N := 0; N <= len(xf)/inc; N++ {
-			e := float32(math.Sqrt(float64(Sdot(N, xf, inc, xf, inc))))
+			e := fsqrt(Sdot(N, xf, inc, xf, inc))
 			r := Snrm2(N, xf, inc)
 			fCheck(t, inc, N, r, e)
 		}
@@ -66,7 +74,7 @@ func TestSasum(t *testing.T) {
 		k := 0
 		for N := 0; N <= len(xf)/inc; N++ {
 			if N > 0 {
-				e += float32(math.Abs(float64(xf[k])))
+				e += fabs(xf[k])
 				k += inc
 			}
 			r := Sasum(N, xf, inc)
@@ -83,7 +91,7 @@ func TestIsamax(t *testing.T) {
 			i_max := 0
 			x_max := float32(0.0)
 			for i := 0; i < N; i++ {
-				x := float32(math.Abs(float64(xf[i*inc])))
+				x := fabs(xf[i*inc])
 				if x > x_max {
 					x_max = x
 					i_max = i
@@ -183,6 +191,56 @@ func TestSscal(t *testing.T) {
 	}
 }
 
+func fEq(a, b float32) bool {
+	return fabs(a - b) < 1.0/(1 << 32)
+}
+
+// Reference implementation of Srotg
+func srotg(a, b float32) (c, s, r, z float32) {
+	roe := b
+	if fabs(a) > fabs(b) {
+		roe = a
+	}
+	scale := fabs(a) + fabs(b)
+	if scale == 0 {
+		c = 1
+	} else {
+		r = scale * fsqrt((a/scale)*(a/scale)+(b/scale)*(b/scale))
+		if math.Signbit(float64(roe)) {
+			r = -r
+		}
+		c = a / r
+		s = b / r
+		z = 1
+		if fabs(a) > fabs(b) {
+			z = s
+		}
+		if fabs(b) >= fabs(a) && c != 0 {
+			z = 1 / c
+		}
+	}
+	return
+}
+
+func TestSrotg(t *testing.T) {
+	vs := []struct{a, b float32}{
+		{0, 0}, {0, 1}, {0, -1},
+		{1, 0}, {1, 1}, {1, -1},
+		{-1, 0}, {-1, 1}, {-1, -1},
+		{2, 0}, {2, 1}, {2, -1},
+		{-2, 0}, {-2, 1}, {-2, -1},
+		{0, 2}, {1, 2}, {-1, 2},
+		{0, -2}, {1, -2}, {-1, 2},
+	}
+	for _, v := range vs {
+		c, s, _, _ := Srotg(v.a, v.b)
+		ec, es, _, _ := srotg(v.a, v.b)
+		if !fEq(c, ec) || !fEq(s, es) {
+			t.Fatalf("a=%f b=%f c=%f s=%f", v.a, v.b, c, s)
+		}
+	}
+}
+
 var vf, wf []float32
 
 func init() {
@@ -259,5 +317,19 @@ func BenchmarkSscal(b *testing.B) {
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 		Sscal(len(y), -1.0, y, 1)
+	}
+}
+
+func BenchmarkSrotg(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Srotg(0, 0)
+		Srotg(0, 1)
+		Srotg(0, -1)
+		Srotg(1, 0)
+		Srotg(1, 1)
+		Srotg(1, -1)
+		Srotg(-1, 0)
+		Srotg(-1, 1)
+		Srotg(-1, -1)
 	}
 }

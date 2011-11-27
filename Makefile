@@ -53,6 +53,7 @@ ALLGOFILES=\
 	   drotg.go\
 	   srot.go\
 	   drot.go\
+	   drotmg.go\
 
 NOGOFILES=\
 	$(subst _$(GOARCH).$O,.go,$(OFILES_$(GOARCH)))

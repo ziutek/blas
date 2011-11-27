@@ -225,6 +225,44 @@ func TestDrotg(t *testing.T) {
 	}
 }
 
+func TestDrot(t *testing.T) {
+	s2 := math.Sqrt(2)
+	vs := []struct{c, s float64}{
+		{0, 0}, {0, 1}, {0, -1}, {1, 0}, {-1, 0},
+		{s2, s2}, {s2, -s2}, {-s2, s2}, {-s2, -s2},
+	}
+	x := make([]float64, len(xd))
+	y := make([]float64, len(yd))
+	ex := make([]float64, len(xd))
+	ey := make([]float64, len(yd))
+	for _, v := range vs {
+		for inc := 1; inc < 9; inc++ {
+			for N := 0; N <= len(xd)/inc; N++ {
+				copy(x, xd)
+				copy(y, yd)
+				copy(ex, xd)
+				copy(ey, yd)
+				Dscal(N, v.c, ex, inc) // ex *= c
+				Daxpy(N, v.s, y, inc, ex, inc) // ex += s*y
+				Dscal(N, v.c, ey, inc) // ey *= c
+				Daxpy(N, -v.s, x, inc, ey, inc) // ey += (-s)*x
+
+				// (x, y) = (c*x + s*y, c*y - s*x) 
+				Drot(N, x, inc, y, inc, v.c, v.s)
+
+				for i, _ := range x {
+					if !dEq(x[i], ex[i]) || !dEq(y[i], ey[i]) {
+						t.Fatalf(
+							"N=%d inc=%d c=%f s=%f i=%d x=%f y=%f ex=%f ey=%f",
+							N, inc, v.c, v.s, i, x[i], y[i], ex[i], ey[i],
+						)
+					}
+				}
+			}
+		}
+	}
+}
+
 var vd, wd []float64
 
 func init() {
@@ -309,5 +347,19 @@ func BenchmarkDrotg(b *testing.B) {
 		Drotg(-1, 0)
 		Drotg(-1, 1)
 		Drotg(-1, -1)
+	}
+}
+
+func BenchmarkDrot(b *testing.B) {
+	b.StopTimer()
+	x := make([]float64, len(vd))
+	y := make([]float64, len(vd))
+	copy(x, vd)
+	copy(y, vd)
+	c := math.Sqrt(2)
+	s := c
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		Drot(len(x), x, 1, y, 1, c, s)
 	}
 }

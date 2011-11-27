@@ -24,6 +24,8 @@ OFILES_amd64=\
 	     dscal_amd64.$O\
 	     srotg_amd64.$O\
 	     drotg_amd64.$O\
+	     srot_amd64.$O\
+	     drot_amd64.$O\
 
 OFILES=\
 	$(OFILES_$(GOARCH))
@@ -49,6 +51,8 @@ ALLGOFILES=\
 	   dscal.go\
 	   srotg.go\
 	   drotg.go\
+	   srot.go\
+	   drot.go\
 
 NOGOFILES=\
 	$(subst _$(GOARCH).$O,.go,$(OFILES_$(GOARCH)))

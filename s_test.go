@@ -241,6 +241,42 @@ func TestSrotg(t *testing.T) {
 	}
 }
 
+func TestSrot(t *testing.T) {
+	s2 := fsqrt(2)
+	vs := []struct{c, s float32}{
+		{0, 0}, {0, 1}, {0, -1}, {1, 0}, {-1, 0},
+		{s2, s2}, {s2, -s2}, {-s2, s2}, {-s2, -s2},
+	}
+	x := make([]float32, len(xf))
+	y := make([]float32, len(yf))
+	ex := make([]float32, len(xf))
+	ey := make([]float32, len(yf))
+	for _, v := range vs {
+		for inc := 1; inc < 9; inc++ {
+			for N := 0; N <= len(xf)/inc; N++ {
+				copy(x, xf)
+				copy(y, yf)
+				copy(ex, xf)
+				copy(ey, yf)
+				Sscal(N, v.c, ex, inc) // ex *= c
+				Saxpy(N, v.s, y, inc, ex, inc) // ex += s*y
+				Sscal(N, v.c, ey, inc) // ey *= c
+				Saxpy(N, -v.s, x, inc, ey, inc) // ey += (-s)*x
+
+				// (x, y) = (c*x + s*y, c*y - s*x) 
+				Srot(N, x, inc, y, inc, v.c, v.s)
+
+				for i, _ := range x {
+					if !fEq(x[i], ex[i]) || !fEq(y[i], ey[i]) {
+						t.Fatalf("N=%d inc=%d i=%d x=%f y=%f ex=%f ey=%f",
+							N, inc, i, x[i], y[i], ex[i], ey[i])
+					}
+				}
+			}
+		}
+	}
+}
+
 var vf, wf []float32
 
 func init() {
@@ -331,5 +367,19 @@ func BenchmarkSrotg(b *testing.B) {
 		Srotg(-1, 0)
 		Srotg(-1, 1)
 		Srotg(-1, -1)
+	}
+}
+
+func BenchmarkSrot(b *testing.B) {
+	b.StopTimer()
+	x := make([]float32, len(vf))
+	y := make([]float32, len(vf))
+	copy(x, vf)
+	copy(y, vf)
+	c := fsqrt(2)
+	s := c
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		Srot(len(x), x, 1, y, 1, c, s)
 	}
 }

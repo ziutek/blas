@@ -3,6 +3,10 @@
 Any function is implemented in generic Go and if it is justified, it is
 optimized for AMD64 (using SSE2 instructions).
 
+AMD64 implementation uses MOVUPS/MOVUPD instructions if all strides equal to 1
+so it run fast on Nehalem, Sandy Bridge and newer processors but relatively
+slow on older processors.
+
 Any implemented function has its own unity test and benchmark.
 
 #### Implemented functions

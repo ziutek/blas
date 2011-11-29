@@ -132,21 +132,22 @@ func TestDcopy(t *testing.T) {
 }
 
 func TestDaxpy(t *testing.T) {
-	alpha := 3.0
-	for inc := 1; inc < 9; inc++ {
-		for N := 0; N <= len(xd)/inc; N++ {
-			r := make([]float64, len(xd))
-			e := make([]float64, len(xd))
-			copy(r, xd)
-			copy(e, xd)
-			Daxpy(N, alpha, xd, inc, r, inc)
-			for i := 0; i < N; i++ {
-				e[i*inc] += alpha * xd[i*inc]
-			}
-			for i := 0; i < len(xd); i++ {
-				if r[i] != e[i] {
-					t.Fatalf("inc=%d N=%d i=%d r=%f e=%f", inc, N, i, r[i],
-						e[i])
+	for _, alpha := range []float64{0, -1, 1, 3} {
+		for inc := 1; inc < 9; inc++ {
+			for N := 0; N <= len(xd)/inc; N++ {
+				r := make([]float64, len(xd))
+				e := make([]float64, len(xd))
+				copy(r, xd)
+				copy(e, xd)
+				Daxpy(N, alpha, xd, inc, r, inc)
+				for i := 0; i < N; i++ {
+					e[i*inc] += alpha * xd[i*inc]
+				}
+				for i := 0; i < len(xd); i++ {
+					if r[i] != e[i] {
+						t.Fatalf("alpha=%f inc=%d N=%d i=%d r=%f e=%f",
+							alpha, inc, N, i, r[i], e[i])
+					}
 				}
 			}
 		}
@@ -176,7 +177,7 @@ func TestDscal(t *testing.T) {
 }
 
 func dEq(a, b float64) bool {
-	return math.Abs(a - b) < 1.0/(1 << 32)
+	return math.Abs(a-b) < 1.0/(1<<32)
 }
 
 // Reference implementation of Drotg
@@ -207,7 +208,7 @@ func drotg(a, b float64) (c, s, r, z float64) {
 }
 
 func TestDrotg(t *testing.T) {
-	vs := []struct{a, b float64}{
+	vs := []struct{ a, b float64 }{
 		{0, 0}, {0, 1}, {0, -1},
 		{1, 0}, {1, 1}, {1, -1},
 		{-1, 0}, {-1, 1}, {-1, -1},
@@ -227,7 +228,7 @@ func TestDrotg(t *testing.T) {
 
 func TestDrot(t *testing.T) {
 	s2 := math.Sqrt(2)
-	vs := []struct{c, s float64}{
+	vs := []struct{ c, s float64 }{
 		{0, 0}, {0, 1}, {0, -1}, {1, 0}, {-1, 0},
 		{s2, s2}, {s2, -s2}, {-s2, s2}, {-s2, -s2},
 	}
@@ -242,9 +243,9 @@ func TestDrot(t *testing.T) {
 				copy(y, yd)
 				copy(ex, xd)
 				copy(ey, yd)
-				Dscal(N, v.c, ex, inc) // ex *= c
-				Daxpy(N, v.s, y, inc, ex, inc) // ex += s*y
-				Dscal(N, v.c, ey, inc) // ey *= c
+				Dscal(N, v.c, ex, inc)          // ex *= c
+				Daxpy(N, v.s, y, inc, ex, inc)  // ex += s*y
+				Dscal(N, v.c, ey, inc)          // ey *= c
 				Daxpy(N, -v.s, x, inc, ey, inc) // ey += (-s)*x
 
 				// (x, y) = (c*x + s*y, c*y - s*x) 

@@ -279,9 +279,9 @@ end:
 	RET
 	loop_diff:
 		// Load from X
-		MOVSD	(SI), X2
+		MOVSD	(DI), X2
 		// Save sum in Y
-		SUBSD	(DI), X2
+		SUBSD	(SI), X2
 		MOVSD	X2, (DI)
 
 		// Update data pointers

@@ -45,5 +45,4 @@ func Daxpy(N int, alpha float64, X []float64, incX int, Y []float64, incY int) {
 			Y[yi] += alpha * X[xi]
 		}
 	}
-	return
 }

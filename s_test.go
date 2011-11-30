@@ -85,7 +85,7 @@ func TestSasum(t *testing.T) {
 
 func TestIsamax(t *testing.T) {
 	xf := []float32{-1, -2, 3, -4, -5, 0, -5, 0, 4, 2, 3, -1, 4, -2, -9, 0,
-		-1, 0, 0, 2, 2, -8, 2, 1, 0, 2, 4, 5, 8, 1, -7, 2, 9, 0, 1, -1 }
+		-1, 0, 0, 2, 2, -8, 2, 1, 0, 2, 4, 5, 8, 1, -7, 2, 9, 0, 1, -1}
 	for inc := 1; inc < 9; inc++ {
 		for N := 0; N <= len(xf)/inc; N++ {
 			i_max := 0
@@ -131,8 +131,8 @@ func TestScopy(t *testing.T) {
 		for N := 0; N <= len(xf)/inc; N++ {
 			a := make([]float32, len(xf))
 			Scopy(N, xf, inc, a, inc)
-			for i := 0; i < inc * N; i++ {
-				if i % inc == 0 {
+			for i := 0; i < inc*N; i++ {
+				if i%inc == 0 {
 					if a[i] != xf[i] {
 						t.Fatalf("inc=%d N=%d i=%d r=%f e=%f", inc, N, i, a[i],
 							xf[i])
@@ -191,8 +191,13 @@ func TestSscal(t *testing.T) {
 	}
 }
 
-func fEq(a, b float32) bool {
-	return fabs(a - b) < 1.0/(1 << 32)
+func fEq(a, b, p float32) bool {
+	eps := float32(math.SmallestNonzeroFloat32 * 2)
+	r := fabs(a) + fabs(b)
+	if r <= eps {
+		return true
+	}
+	return fabs(a-b)/r < p
 }
 
 // Reference implementation of Srotg
@@ -223,7 +228,7 @@ func srotg(a, b float32) (c, s, r, z float32) {
 }
 
 func TestSrotg(t *testing.T) {
-	vs := []struct{a, b float32}{
+	vs := []struct{ a, b float32 }{
 		{0, 0}, {0, 1}, {0, -1},
 		{1, 0}, {1, 1}, {1, -1},
 		{-1, 0}, {-1, 1}, {-1, -1},
@@ -235,7 +240,7 @@ func TestSrotg(t *testing.T) {
 	for _, v := range vs {
 		c, s, _, _ := Srotg(v.a, v.b)
 		ec, es, _, _ := srotg(v.a, v.b)
-		if !fEq(c, ec) || !fEq(s, es) {
+		if !fEq(c, ec, 1e-9) || !fEq(s, es, 1e-9) {
 			t.Fatalf("a=%f b=%f c=%f s=%f", v.a, v.b, c, s)
 		}
 	}
@@ -243,7 +248,7 @@ func TestSrotg(t *testing.T) {
 
 func TestSrot(t *testing.T) {
 	s2 := fsqrt(2)
-	vs := []struct{c, s float32}{
+	vs := []struct{ c, s float32 }{
 		{0, 0}, {0, 1}, {0, -1}, {1, 0}, {-1, 0},
 		{s2, s2}, {s2, -s2}, {-s2, s2}, {-s2, -s2},
 	}
@@ -258,16 +263,16 @@ func TestSrot(t *testing.T) {
 				copy(y, yf)
 				copy(ex, xf)
 				copy(ey, yf)
-				Sscal(N, v.c, ex, inc) // ex *= c
-				Saxpy(N, v.s, y, inc, ex, inc) // ex += s*y
-				Sscal(N, v.c, ey, inc) // ey *= c
+				Sscal(N, v.c, ex, inc)          // ex *= c
+				Saxpy(N, v.s, y, inc, ex, inc)  // ex += s*y
+				Sscal(N, v.c, ey, inc)          // ey *= c
 				Saxpy(N, -v.s, x, inc, ey, inc) // ey += (-s)*x
 
 				// (x, y) = (c*x + s*y, c*y - s*x) 
 				Srot(N, x, inc, y, inc, v.c, v.s)
 
 				for i, _ := range x {
-					if !fEq(x[i], ex[i]) || !fEq(y[i], ey[i]) {
+					if !fEq(x[i], ex[i], 1e-7) || !fEq(y[i], ey[i], 1e-7) {
 						t.Fatalf("N=%d inc=%d i=%d x=%f y=%f ex=%f ey=%f",
 							N, inc, i, x[i], y[i], ex[i], ey[i])
 					}

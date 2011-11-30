@@ -19,13 +19,13 @@ OFILES_amd64=\
 	     scopy_amd64.$O\
 	     dcopy_amd64.$O\
 	     saxpy_amd64.$O\
+	     daxpy_amd64.$O\
 	     sscal_amd64.$O\
 	     dscal_amd64.$O\
 	     srotg_amd64.$O\
 	     drotg_amd64.$O\
 	     srot_amd64.$O\
 	     drot_amd64.$O\
-	     daxpy_amd64.$O\
 
 OFILES=\
 	$(OFILES_$(GOARCH))

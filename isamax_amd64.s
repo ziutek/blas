@@ -19,7 +19,7 @@ TEXT ·Isamax(SB), 7, $0
 	XORQ	BX, BX
 
 	// Mask for sign bit clear
-	PCMPEQL	X4, X4 
+	PCMPEQW	X4, X4 
 	PSRLL	$1, X4
 
 	// Setup stride

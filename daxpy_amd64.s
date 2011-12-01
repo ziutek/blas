@@ -8,13 +8,13 @@ TEXT ·Daxpy(SB), 7, $0
 	MOVL	incY+56(FP), BX
 
 	// Setup 0, 1, -1
-	PCMPEQW	X6, X6
-	PCMPEQW	X7, X7
-	XORPD	X1, X1	// 0
-	PSLLQ	$54, X6
-	PSRLQ	$2, X6	// 1
+	PCMPEQL	X1, X1
+	PCMPEQL	X7, X7
+	XORPD	X6, X6	// 0
+	PSLLQ	$54, X1
+	PSRLQ	$2, X1	// 1
 	PSLLQ	$63, X7
-	ORPD	X6, X7	// -1
+	ORPD	X1, X7	// -1
 
 	// Check data bounaries
 	MOVL	BP, CX
@@ -28,7 +28,7 @@ TEXT ·Daxpy(SB), 7, $0
 	JGE		panic
 
 	// Check that is there any work to do
-	UCOMISD	X0, X1	
+	UCOMISD	X0, X6	
 	JE	end	// alpha == 0
 
 	// Setup strides
@@ -40,7 +40,6 @@ TEXT ·Daxpy(SB), 7, $0
 	JL		rest	// There are less than 4 pairs to process
 
 	// Setup two alphas in X0
-	
 	MOVLHPS	X0, X0
 
 	// Check if incX != 1 or incY != 1
@@ -50,7 +49,7 @@ TEXT ·Daxpy(SB), 7, $0
 	JNE	with_stride
 
 	// Fully optimized loops (for incX == incY == 1)
-	UCOMISD	X0, X6
+	UCOMISD	X0, X1
 	JE	full_simd_loop_sum	// alpha == 1
 	UCOMISD	X0, X7
 	JE	full_simd_loop_diff	// alpha == -1
@@ -130,7 +129,7 @@ with_stride:
 	SALQ	$1, CX 	// CX = 16 * incX
 	SALQ	$1, DX 	// DX = 16 * incY
 
-	UCOMISD	X0, X6
+	UCOMISD	X0, X1
 	JE	half_simd_loop_sum	// alpha == 1
 	UCOMISD	X0, X7
 	JE	half_simd_loop_diff	// alpha == -1
@@ -242,7 +241,7 @@ rest:
 	// Check that are there any value to process
 	JE	end
 
-	UCOMISD	X0, X6
+	UCOMISD	X0, X1
 	JE	loop_sum	// alpha == 1
 	UCOMISD	X0, X7
 	JE	loop_diff	// alpha == -1
@@ -275,7 +274,7 @@ end:
 		ADDQ	BX, DI
 
 		DECQ	BP
-		JNE	loop
+		JNE	loop_sum
 	RET
 	loop_diff:
 		// Load from X
@@ -289,7 +288,7 @@ end:
 		ADDQ	BX, DI
 
 		DECQ	BP
-		JNE	loop
+		JNE	loop_diff
 	RET
 
 panic:

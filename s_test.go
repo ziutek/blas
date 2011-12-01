@@ -148,21 +148,22 @@ func TestScopy(t *testing.T) {
 }
 
 func TestSaxpy(t *testing.T) {
-	alpha := float32(3.0)
-	for inc := 1; inc < 9; inc++ {
-		for N := 0; N <= len(xf)/inc; N++ {
-			r := make([]float32, len(xf))
-			e := make([]float32, len(xf))
-			copy(r, xf)
-			copy(e, xf)
-			Saxpy(N, alpha, xf, inc, r, inc)
-			for i := 0; i < N; i++ {
-				e[i*inc] += alpha * xf[i*inc]
-			}
-			for i := 0; i < len(xf); i++ {
-				if r[i] != e[i] {
-					t.Fatalf("inc=%d N=%d i=%d r=%f e=%f", inc, N, i, r[i],
-						e[i])
+	for _, alpha := range []float32{0, -1, 1, 3} {
+		for inc := 1; inc < 9; inc++ {
+			for N := 0; N <= len(xf)/inc; N++ {
+				r := make([]float32, len(xf))
+				e := make([]float32, len(xf))
+				copy(r, xf)
+				copy(e, xf)
+				Saxpy(N, alpha, xf, inc, r, inc)
+				for i := 0; i < N; i++ {
+					e[i*inc] += alpha * xf[i*inc]
+				}
+				for i := 0; i < len(xf); i++ {
+					if r[i] != e[i] {
+						t.Fatalf("alpha=%f inc=%d N=%d i=%d r=%f e=%f",
+							alpha, inc, N, i, r[i], e[i])
+					}
 				}
 			}
 		}

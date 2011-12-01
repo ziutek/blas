@@ -176,8 +176,13 @@ func TestDscal(t *testing.T) {
 	}
 }
 
-func dEq(a, b float64) bool {
-	return math.Abs(a-b) < 1.0/(1<<32)
+func dEq(a, b, p float64) bool {
+	eps := math.SmallestNonzeroFloat64 * 2
+	r := math.Abs(a) + math.Abs(b)
+	if r <= eps {
+		return true
+	}
+	return math.Abs(a-b)/r < p
 }
 
 // Reference implementation of Drotg
@@ -220,7 +225,7 @@ func TestDrotg(t *testing.T) {
 	for _, v := range vs {
 		c, s, _, _ := Drotg(v.a, v.b)
 		ec, es, _, _ := drotg(v.a, v.b)
-		if !dEq(c, ec) || !dEq(s, es) {
+		if !dEq(c, ec, 1e-18) || !dEq(s, es, 1e-18) {
 			t.Fatalf("a=%f b=%f c=%f s=%f", v.a, v.b, c, s)
 		}
 	}
@@ -252,7 +257,7 @@ func TestDrot(t *testing.T) {
 				Drot(N, x, inc, y, inc, v.c, v.s)
 
 				for i, _ := range x {
-					if !dEq(x[i], ex[i]) || !dEq(y[i], ey[i]) {
+					if !dEq(x[i], ex[i], 1e-14) || !dEq(y[i], ey[i], 1e-14) {
 						t.Fatalf(
 							"N=%d inc=%d c=%f s=%f i=%d x=%f y=%f ex=%f ey=%f",
 							N, inc, v.c, v.s, i, x[i], y[i], ex[i], ey[i],

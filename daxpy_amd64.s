@@ -277,7 +277,7 @@ end:
 		JNE	loop_sum
 	RET
 	loop_diff:
-		// Load from X
+		// Load from Y 
 		MOVSD	(DI), X2
 		// Save sum in Y
 		SUBSD	(SI), X2

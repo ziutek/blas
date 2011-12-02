@@ -38,6 +38,9 @@ roe_b:
 	JNE	scale_NE_zero
 	
 	MOVSS	X7, c+8(FP)	// c = 1
+	MOVSS	X8,	s+12(FP)	// s = 0
+	MOVSS	X8,	r+16(FP)	// r = 0
+	MOVSS	X8, z+20(FP)	// z = 0
 	RET
 
 scale_NE_zero:
@@ -62,7 +65,7 @@ scale_NE_zero:
 
 roe_GE_zero:
 
-	DIVPS	X0, X1			// (a/r, b/r) 	
+	DIVPS	X0, X1		// (a/r, b/r) 	
 	MOVSS	X1, c+8(FP)	// c = a/r
 	MOVHLPS	X1, X1
 	MOVSS	X1,	s+12(FP)	// s = b/r

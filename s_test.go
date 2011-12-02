@@ -241,8 +241,8 @@ func TestSrotg(t *testing.T) {
 	for _, v := range vs {
 		c, s, _, _ := Srotg(v.a, v.b)
 		ec, es, _, _ := srotg(v.a, v.b)
-		if !fEq(c, ec, 1e-9) || !fEq(s, es, 1e-9) {
-			t.Fatalf("a=%f b=%f c=%f s=%f", v.a, v.b, c, s)
+		if !fEq(c, ec, 1e-20) || !fEq(s, es, 1e-20) {
+			t.Fatalf("a=%g b=%g c=%g ec=%g s=%g es=%g", v.a, v.b, c, ec, s, es)
 		}
 	}
 }
@@ -273,9 +273,11 @@ func TestSrot(t *testing.T) {
 				Srot(N, x, inc, y, inc, v.c, v.s)
 
 				for i, _ := range x {
-					if !fEq(x[i], ex[i], 1e-7) || !fEq(y[i], ey[i], 1e-7) {
-						t.Fatalf("N=%d inc=%d i=%d x=%f y=%f ex=%f ey=%f",
-							N, inc, i, x[i], y[i], ex[i], ey[i])
+					if !fEq(x[i], ex[i], 1e-15) || !fEq(y[i], ey[i], 1e-15) {
+						t.Fatalf(
+							"N=%d inc=%d c=%f s=%f i=%d x=%f ex=%f y=%f ey=%f",
+							N, inc, v.c, v.s, i, x[i], ex[i], y[i], ey[i],
+						)
 					}
 				}
 			}

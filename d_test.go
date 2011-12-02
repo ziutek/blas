@@ -213,7 +213,7 @@ func drotg(a, b float64) (c, s, r, z float64) {
 }
 
 func TestDrotg(t *testing.T) {
-	vs := []struct{ a, b float64 }{
+	vs := []struct{ a, b float64}{
 		{0, 0}, {0, 1}, {0, -1},
 		{1, 0}, {1, 1}, {1, -1},
 		{-1, 0}, {-1, 1}, {-1, -1},
@@ -225,8 +225,8 @@ func TestDrotg(t *testing.T) {
 	for _, v := range vs {
 		c, s, _, _ := Drotg(v.a, v.b)
 		ec, es, _, _ := drotg(v.a, v.b)
-		if !dEq(c, ec, 1e-18) || !dEq(s, es, 1e-18) {
-			t.Fatalf("a=%f b=%f c=%f s=%f", v.a, v.b, c, s)
+		if !dEq(c, ec, 1e-30) || !dEq(s, es, 1e-30) {
+			t.Fatalf("a=%g b=%g c=%g ec=%g s=%g es=%g", v.a, v.b, c, ec, s, es)
 		}
 	}
 }
@@ -257,10 +257,10 @@ func TestDrot(t *testing.T) {
 				Drot(N, x, inc, y, inc, v.c, v.s)
 
 				for i, _ := range x {
-					if !dEq(x[i], ex[i], 1e-14) || !dEq(y[i], ey[i], 1e-14) {
+					if !dEq(x[i], ex[i], 1e-20) || !dEq(y[i], ey[i], 1e-20) {
 						t.Fatalf(
-							"N=%d inc=%d c=%f s=%f i=%d x=%f y=%f ex=%f ey=%f",
-							N, inc, v.c, v.s, i, x[i], y[i], ex[i], ey[i],
+							"N=%d inc=%d c=%f s=%f i=%d x=%f ex=%f y=%f ey=%f",
+							N, inc, v.c, v.s, i, x[i], ex[i], y[i], ey[i],
 						)
 					}
 				}

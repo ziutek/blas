@@ -38,6 +38,9 @@ roe_b:
 	JNE	scale_NE_zero
 	
 	MOVSD	X7, c+16(FP)	// c = 1
+	MOVHPD	X8,	s+24(FP)	// s = 0
+	MOVSD	X8,	r+32(FP)	// r = 0
+	MOVSD	X8, z+40(FP)	// z = 0
 	RET
 
 scale_NE_zero:

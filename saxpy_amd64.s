@@ -9,12 +9,12 @@ TEXT ·Saxpy(SB), 7, $0
 
 	// Setup 0, 1, -1
 	PCMPEQW	X1, X1
-	PCMPEQW	X7, X7
-	XORPS	X6, X6	// 0
+	PCMPEQW	X8, X8
+	XORPS	X7, X7	// 0
 	PSLLL	$25, X1
 	PSRLL	$2, X1	// 1
-	PSLLL	$31, X7
-	ORPS	X1, X7	// -1
+	PSLLL	$31, X8
+	ORPS	X1, X8	// -1
 
 	// Check data bounaries
 	MOVL	BP, CX
@@ -28,7 +28,7 @@ TEXT ·Saxpy(SB), 7, $0
 	JGE		panic
 
 	// Check that is there any work to do
-	UCOMISS	X0, X6	
+	UCOMISS	X0, X7	
 	JE	end	// alpha == 0
 
 	// Setup strides
@@ -51,7 +51,7 @@ TEXT ·Saxpy(SB), 7, $0
 	// Fully optimized loop (for incX == incY == 1)
 	UCOMISS	X0, X1
 	JE	full_simd_loop_sum	// alpha == 1
-	UCOMISS	X0, X7
+	UCOMISS	X0, X8
 	JE	full_simd_loop_diff	// alpha == -1
 
 	full_simd_loop:
@@ -112,7 +112,7 @@ with_stride:
 
 	UCOMISS	X0, X1
 	JE	half_simd_loop_sum	// alpha == 1
-	UCOMISS	X0, X7
+	UCOMISS	X0, X8
 	JE	half_simd_loop_diff	// alpha == -1
 
 	half_simd_loop:
@@ -231,7 +231,7 @@ rest:
 
 	UCOMISS	X0, X1
 	JE	loop_sum	// alpha == 1
-	UCOMISS	X0, X7
+	UCOMISS	X0, X8
 	JE	loop_diff	// alpha == -1
 
 	loop:
@@ -251,7 +251,7 @@ rest:
 end:
 	RET
 	loop_sum:
-		// Load from X and scale
+		// Load from X
 		MOVSS	(SI), X2
 		// Save sum in Y
 		ADDSS	(DI), X2
@@ -265,7 +265,7 @@ end:
 		JNE	loop_sum
 	RET
 	loop_diff:
-		// Load from X and scale
+		// Load from Y 
 		MOVSS	(DI), X2
 		// Save sum in Y
 		SUBSS	(SI), X2

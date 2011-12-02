@@ -273,7 +273,7 @@ func TestSrot(t *testing.T) {
 				Srot(N, x, inc, y, inc, v.c, v.s)
 
 				for i, _ := range x {
-					if !fEq(x[i], ex[i], 1e-15) || !fEq(y[i], ey[i], 1e-15) {
+					if !fEq(x[i], ex[i], 1e-7) || !fEq(y[i], ey[i], 1e-7) {
 						t.Fatalf(
 							"N=%d inc=%d c=%f s=%f i=%d x=%f ex=%f y=%f ey=%f",
 							N, inc, v.c, v.s, i, x[i], ex[i], y[i], ey[i],

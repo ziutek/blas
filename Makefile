@@ -2,7 +2,7 @@ include $(GOROOT)/src/Make.inc
 
 #GC = $Og -N
 GC = $Og -B
-TARG=blas
+TARG=github.com/ziutek/blas
 
 OFILES_amd64=\
 	     sdsdot_amd64.$O\

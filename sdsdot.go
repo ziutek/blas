@@ -1,25 +1,27 @@
 package blas
 
 // \alpha + X^T Y  computed using float64
-func Sdsdot(N int, alpha float32, X []float32, incX int, Y []float32, incY int) float32 {
+func Sdsdot(N int, alpha float32, X []float32, incX int, Y []float32, incY int) float32
+
+func sdsdot(N int, alpha float32, X []float32, incX int, Y []float32, incY int) float32 {
 	var (
 		a, b, c, d float64
-		xi, yi int
+		xi, yi     int
 	)
 	for ; N >= 4; N -= 4 {
-		a +=  float64(X[xi]) * float64(Y[yi])
+		a += float64(X[xi]) * float64(Y[yi])
 		xi += incX
 		yi += incY
 
-		b +=  float64(X[xi]) * float64(Y[yi])
+		b += float64(X[xi]) * float64(Y[yi])
 		xi += incX
 		yi += incY
 
-		c +=  float64(X[xi]) * float64(Y[yi])
+		c += float64(X[xi]) * float64(Y[yi])
 		xi += incX
 		yi += incY
 
-		d +=  float64(X[xi]) * float64(Y[yi])
+		d += float64(X[xi]) * float64(Y[yi])
 		xi += incX
 		yi += incY
 	}

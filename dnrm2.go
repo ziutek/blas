@@ -3,10 +3,12 @@ package blas
 import "math"
 
 // Euclidean norm: ||X||_2 = \sqrt {\sum X_i^2}
-func Dnrm2(N int, X []float64, incX int) float64 {
+func Dnrm2(N int, X []float64, incX int) float64
+
+func dnrm2(N int, X []float64, incX int) float64 {
 	var (
 		a, b, c, d float64
-		xi int
+		xi         int
 	)
 	for ; N >= 4; N -= 4 {
 		a += X[xi] * X[xi]

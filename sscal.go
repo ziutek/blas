@@ -1,7 +1,9 @@
 package blas
 
 // Rescale the vector X by the multiplicative factor alpha
-func Sscal(N int, alpha float32, X []float32, incX int) {
+func Sscal(N int, alpha float32, X []float32, incX int)
+
+func sscal(N int, alpha float32, X []float32, incX int) {
 	var xi int
 	for ; N >= 2; N -= 2 {
 		X[xi] = alpha * X[xi]

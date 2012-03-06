@@ -3,7 +3,9 @@ package blas
 import "math"
 
 // Compute a Givens rotation (c,s) which zeroes the vector (a,b)
-func Srotg(a, b float32) (c, s, r, z float32) {
+func Srotg(a, b float32) (c, s, r, z float32)
+
+func srotg(a, b float32) (c, s, r, z float32) {
 	abs_a := a
 	if a < 0 {
 		abs_a = -a
@@ -20,10 +22,10 @@ func Srotg(a, b float32) (c, s, r, z float32) {
 	if scale == 0 {
 		c = 1
 	} else {
-		sa := a/scale
-		sb := b/scale
+		sa := a / scale
+		sb := b / scale
 		r = scale * float32(math.Sqrt(float64(sa*sa+sb*sb)))
-		if (roe < 0) {
+		if roe < 0 {
 			r = -r
 		}
 		c = a / r

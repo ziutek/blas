@@ -1,7 +1,9 @@
 package blas
 
 // Compute the sum Y = \alpha X + Y for the vectors X and Y 
-func Daxpy(N int, alpha float64, X []float64, incX int, Y []float64, incY int) {
+func Daxpy(N int, alpha float64, X []float64, incX int, Y []float64, incY int)
+
+func daxpy(N int, alpha float64, X []float64, incX int, Y []float64, incY int) {
 	var xi, yi int
 	switch alpha {
 	case 0:

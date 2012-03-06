@@ -1,7 +1,9 @@
 package blas
 
 // Compute the sum Y = \alpha X + Y for the vectors X and Y 
-func Saxpy(N int, alpha float32, X []float32, incX int, Y []float32, incY int) {
+func Saxpy(N int, alpha float32, X []float32, incX int, Y []float32, incY int)
+
+func saxpy(N int, alpha float32, X []float32, incX int, Y []float32, incY int) {
 	var xi, yi int
 	switch alpha {
 	case 0:

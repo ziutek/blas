@@ -202,7 +202,7 @@ func fEq(a, b, p float32) bool {
 }
 
 // Reference implementation of Srotg
-func srotg(a, b float32) (c, s, r, z float32) {
+func refSrotg(a, b float32) (c, s, r, z float32) {
 	roe := b
 	if fabs(a) > fabs(b) {
 		roe = a
@@ -240,7 +240,7 @@ func TestSrotg(t *testing.T) {
 	}
 	for _, v := range vs {
 		c, s, _, _ := Srotg(v.a, v.b)
-		ec, es, _, _ := srotg(v.a, v.b)
+		ec, es, _, _ := refSrotg(v.a, v.b)
 		if !fEq(c, ec, 1e-20) || !fEq(s, es, 1e-20) {
 			t.Fatalf("a=%g b=%g c=%g ec=%g s=%g es=%g", v.a, v.b, c, ec, s, es)
 		}

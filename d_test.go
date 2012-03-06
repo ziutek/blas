@@ -186,7 +186,7 @@ func dEq(a, b, p float64) bool {
 }
 
 // Reference implementation of Drotg
-func drotg(a, b float64) (c, s, r, z float64) {
+func refDrotg(a, b float64) (c, s, r, z float64) {
 	roe := b
 	if math.Abs(a) > math.Abs(b) {
 		roe = a
@@ -224,7 +224,7 @@ func TestDrotg(t *testing.T) {
 	}
 	for _, v := range vs {
 		c, s, _, _ := Drotg(v.a, v.b)
-		ec, es, _, _ := drotg(v.a, v.b)
+		ec, es, _, _ := refDrotg(v.a, v.b)
 		if !dEq(c, ec, 1e-30) || !dEq(s, es, 1e-30) {
 			t.Fatalf("a=%g b=%g c=%g ec=%g s=%g es=%g", v.a, v.b, c, ec, s, es)
 		}

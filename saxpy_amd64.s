@@ -85,7 +85,7 @@ TEXT ·Saxpy(SB), 7, $0
 
 		SUBQ	$4, BP
 		JGE		full_simd_loop_sum	// There are 4 or more pairs to process
-	JMP	rest
+	JMP	rest_sum
 
 	full_simd_loop_diff:
 		// Load four pairs
@@ -101,7 +101,7 @@ TEXT ·Saxpy(SB), 7, $0
 
 		SUBQ	$4, BP
 		JGE		full_simd_loop_diff	// There are 4 or more pairs to process
-	JMP	rest
+	JMP	rest_diff
 
 with_stride:
 	// Setup long strides
@@ -194,7 +194,7 @@ with_stride:
 
 		SUBQ	$4, BP
 		JGE		half_simd_loop_sum	// There are 4 or more pairs to process
-	JMP rest
+	JMP rest_sum
 
 	half_simd_loop_diff:
 		MOVSS	(DI), X2
@@ -221,19 +221,13 @@ with_stride:
 
 		SUBQ	$4, BP
 		JGE		half_simd_loop_diff	// There are 4 or more pairs to process
+	JMP rest_diff
 
 rest:
 	// Undo last SUBQ
 	ADDQ	$4,	BP
-
 	// Check that are there any value to process
 	JE	end
-
-	UCOMISS	X0, X1
-	JE	loop_sum	// alpha == 1
-	UCOMISS	X0, X8
-	JE	loop_diff	// alpha == -1
-
 	loop:
 		// Load from X and scale
 		MOVSS	(SI), X2
@@ -248,8 +242,13 @@ rest:
 
 		DECQ	BP
 		JNE	loop
-end:
 	RET
+
+rest_sum:
+	// Undo last SUBQ
+	ADDQ	$4,	BP
+	// Check that are there any value to process
+	JE	end
 	loop_sum:
 		// Load from X
 		MOVSS	(SI), X2
@@ -264,6 +263,12 @@ end:
 		DECQ	BP
 		JNE	loop_sum
 	RET
+
+rest_diff:
+	// Undo last SUBQ
+	ADDQ	$4,	BP
+	// Check that are there any value to process
+	JE	end
 	loop_diff:
 		// Load from Y 
 		MOVSS	(DI), X2
@@ -281,4 +286,5 @@ end:
 
 panic:
 	CALL	runtime·panicindex(SB)
+end:
 	RET

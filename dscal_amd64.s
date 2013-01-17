@@ -9,7 +9,7 @@ TEXT ·Dscal(SB), 7, $0
 	MOVL	BP, CX
 	DECL	CX
 	IMULL	AX, CX	// CX = incX * (N - 1)
-	CMPL	CX, X_len+16(FP)
+	CMPL	CX, X_len+24(FP)
 	JGE		panic
 
 	// Setup strides

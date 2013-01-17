@@ -151,6 +151,36 @@ func TestDaxpy(t *testing.T) {
 				}
 			}
 		}
+
+		// Test bounds checks.
+		panicked := func(f func()) (panicked bool) {
+			panicked = false
+			defer func() {
+				if recover() != nil {
+					panicked = true
+				}
+			}()
+			f()
+			return panicked
+		}
+		d2 := []float64{1.0, 1.0}
+		d3 := []float64{1.0, 1.0, 1.0}
+		if !panicked(func() { Daxpy(3, alpha, d2, 1, d2, 1) }) {
+			t.Fatalf("Expected panic on index out of range.")
+		}
+		if !panicked(func() { Daxpy(2, alpha, d2, 2, d2, 1) }) {
+			t.Fatalf("Expected panic on index out of range.")
+		}
+		if !panicked(func() { Daxpy(2, alpha, d2, 1, d2, 2) }) {
+			t.Fatalf("Expected panic on index out of range.")
+		}
+		if !panicked(func() { Daxpy(3, alpha, d3, 1, d2, 1) }) {
+			t.Fatalf("Expected panic on index out of range.")
+		}
+		if !panicked(func() { Daxpy(3, alpha, d2, 1, d3, 2) }) {
+			t.Fatalf("Expected panic on index out of range.")
+		}
+
 	}
 }
 

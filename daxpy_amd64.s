@@ -22,9 +22,9 @@ TEXT ·Daxpy(SB), 7, $0
 	MOVL	CX, DX
 	IMULL	AX, CX	// CX = incX * (N - 1)
 	IMULL	BX, DX	// DX = incY * (N - 1)
-	CMPL	CX, X_len+16(FP)
+	CMPL	CX, X_len+24(FP)
 	JGE		panic
-	CMPL	DX, Y_len+40(FP)
+	CMPL	DX, Y_len+48(FP)
 	JGE		panic
 
 	// Check that is there any work to do

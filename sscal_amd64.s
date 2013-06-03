@@ -1,15 +1,15 @@
 //func Sscal(N int, alpha float32, X []float32, incX int)
 TEXT ·Sscal(SB), 7, $0
-	MOVL	N+0(FP), BP
-	MOVSS	alpha+4(FP), X0
-	MOVQ	X_data+8(FP), SI
-	MOVL	incX+24(FP), AX
+	MOVQ	N+0(FP), BP
+	MOVSS	alpha+8(FP), X0
+	MOVQ	X_data+16(FP), SI
+	MOVQ	incX+40(FP), AX
 
 	// Check data bounaries
-	MOVL	BP, CX
-	DECL	CX
-	IMULL	AX, CX	// CX = incX * (N - 1)
-	CMPL	CX, X_len+16(FP)
+	MOVQ	BP, CX
+	DECQ	CX
+	IMULQ	AX, CX	// CX = incX * (N - 1)
+	CMPQ	CX, X_len+24(FP)
 	JGE		panic
 
 	// Setup stride

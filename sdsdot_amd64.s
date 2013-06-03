@@ -1,20 +1,20 @@
 // func Sdsdot(N int, alpha float32, X []float32, incX int, Y []float32, incY int) float32
 TEXT ·Sdsdot(SB), 7, $0
-	MOVL	N+0(FP), BP
-	MOVQ	X_data+8(FP), SI
-	MOVL	incX+24(FP), AX
-	MOVQ	Y_data+32(FP), DI
-	MOVL	incY+48(FP), BX
+	MOVQ	N+0(FP), BP
+	MOVQ	X_data+16(FP), SI
+	MOVQ	incX+40(FP), AX
+	MOVQ	Y_data+48(FP), DI
+	MOVQ	incY+72(FP), BX
 
 	// Check data bounaries
-	MOVL	BP, CX
-	DECL	CX
-	MOVL	CX, DX
-	IMULL	AX, CX	// CX = incX * (N - 1)
-	IMULL	BX, DX	// DX = incY * (N - 1)
-	CMPL	CX, X_len+16(FP)
+	MOVQ	BP, CX
+	DECQ	CX
+	MOVQ	CX, DX
+	IMULQ	AX, CX	// CX = incX * (N - 1)
+	IMULQ	BX, DX	// DX = incY * (N - 1)
+	CMPQ	CX, X_len+16(FP)
 	JGE		panic
-	CMPL	DX, Y_len+40(FP)
+	CMPQ	DX, Y_len+56(FP)
 	JGE		panic
 
 	// Clear accumulators
@@ -154,13 +154,13 @@ rest:
 
 end:
 	// Add alpha
-	MOVSS		alpha+4(FP), X1
+	MOVSS		alpha+8(FP), X1
 	CVTSS2SD	X1, X1
 	ADDSD		X1, X0
 
 	// Convert result to float32 and return
 	CVTSD2SS	X0, X0	
-	MOVSS		X0, r+56(FP)
+	MOVSS		X0, r+80(FP)
 	RET
 
 panic:

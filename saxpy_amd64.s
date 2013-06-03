@@ -1,11 +1,11 @@
 //func Saxpy(N int, alpha float32, X []float32, incX int, Y []float32, incY int)
 TEXT ·Saxpy(SB), 7, $0
-	MOVL	N+0(FP), BP
-	MOVSS	alpha+4(FP), X0
-	MOVQ	X_data+8(FP), SI
-	MOVL	incX+24(FP), AX
-	MOVQ	Y_data+32(FP), DI
-	MOVL	incY+48(FP), BX
+	MOVQ	N+0(FP), BP
+	MOVSS	alpha+8(FP), X0
+	MOVQ	X_data+16(FP), SI
+	MOVQ	incX+40(FP), AX
+	MOVQ	Y_data+48(FP), DI
+	MOVQ	incY+72(FP), BX
 
 	// Setup 0, 1, -1
 	PCMPEQW	X1, X1
@@ -17,14 +17,14 @@ TEXT ·Saxpy(SB), 7, $0
 	ORPS	X1, X8	// -1
 
 	// Check data bounaries
-	MOVL	BP, CX
-	DECL	CX
-	MOVL	CX, DX
-	IMULL	AX, CX	// CX = incX * (N - 1)
-	IMULL	BX, DX	// DX = incY * (N - 1)
-	CMPL	CX, X_len+16(FP)
+	MOVQ	BP, CX
+	DECQ	CX
+	MOVQ	CX, DX
+	IMULQ	AX, CX	// CX = incX * (N - 1)
+	IMULQ	BX, DX	// DX = incY * (N - 1)
+	CMPQ	CX, X_len+24(FP)
 	JGE		panic
-	CMPL	DX, Y_len+40(FP)
+	CMPQ	DX, Y_len+56(FP)
 	JGE		panic
 
 	// Check that is there any work to do

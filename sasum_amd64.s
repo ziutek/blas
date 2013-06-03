@@ -1,14 +1,14 @@
 // func Sasum(N int, X []float32, incX int) float32
 TEXT ·Sasum(SB), 7, $0
-	MOVL	N+0(FP), BP
+	MOVQ	N+0(FP), BP
 	MOVQ	X_data+8(FP), SI
-	MOVL	incX+24(FP), AX
+	MOVQ	incX+32(FP), AX
 
 	// Check data bounaries
-	MOVL	BP, CX
-	DECL	CX
-	IMULL	AX, CX	// CX = incX * (N - 1)
-	CMPL	CX, X_len+16(FP)
+	MOVQ	BP, CX
+	DECQ	CX
+	IMULQ	AX, CX	// CX = incX * (N - 1)
+	CMPQ	CX, X_len+16(FP)
 	JGE		panic
 
 	// Clear accumulators
@@ -116,7 +116,7 @@ rest:
 
 end:
 	// Return the square root of sum
-	MOVSS	X0, r+32(FP)
+	MOVSS	X0, r+40(FP)
 	RET
 
 panic:

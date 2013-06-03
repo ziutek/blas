@@ -1,14 +1,14 @@
 // func Dasum(N int, X []float64, incX int) float64
 TEXT ·Dasum(SB), 7, $0
-	MOVL	N+0(FP), BP
+	MOVQ	N+0(FP), BP
 	MOVQ	X+8(FP), SI	// X.data
-	MOVL	incX+24(FP), AX
+	MOVQ	incX+32(FP), AX
 
 	// Check data bounaries
-	MOVL	BP, CX
-	DECL	CX
-	IMULL	AX, CX	// CX = incX * (N - 1)
-	CMPL	CX, X_len+16(FP)
+	MOVQ	BP, CX
+	DECQ	CX
+	IMULQ	AX, CX	// CX = incX * (N - 1)
+	CMPQ	CX, X_len+16(FP)
 	JGE		panic
 
 	// Clear accumulators
@@ -110,7 +110,7 @@ loop:
 
 end:
 	// Return the square root of sum
-	MOVSD	X0, r+32(FP)
+	MOVSD	X0, r+40(FP)
 	RET
 
 panic:

@@ -1,22 +1,22 @@
 // func Srot(N int, X []float32, incX int, Y []float32, incY int, c, s float32)
 TEXT ·Srot(SB), 7, $0
-	MOVL	N+0(FP), BP
+	MOVQ	N+0(FP), BP
 	MOVQ	X_data+8(FP), SI
-	MOVL	incX+24(FP), AX
-	MOVQ	Y_data+32(FP), DI
-	MOVL	incY+48(FP), BX
-	MOVSS	c+52(FP), X0
-	MOVSS	s+56(FP), X1
+	MOVQ	incX+32(FP), AX
+	MOVQ	Y_data+40(FP), DI
+	MOVQ	incY+64(FP), BX
+	MOVSS	c+72(FP), X0
+	MOVSS	s+76(FP), X1
 
 	// Check data bounaries
-	MOVL	BP, CX
-	DECL	CX
-	MOVL	CX, DX
-	IMULL	AX, CX	// CX = incX * (N - 1)
-	IMULL	BX, DX	// DX = incY * (N - 1)
-	CMPL	CX, X_len+16(FP)
+	MOVQ	BP, CX
+	DECQ	CX
+	MOVQ	CX, DX
+	IMULQ	AX, CX	// CX = incX * (N - 1)
+	IMULQ	BX, DX	// DX = incY * (N - 1)
+	CMPQ	CX, X_len+16(FP)
 	JGE		panic
-	CMPL	DX, Y_len+40(FP)
+	CMPQ	DX, Y_len+48(FP)
 	JGE		panic
 
 	// Setup strides

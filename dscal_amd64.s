@@ -1,15 +1,15 @@
 // func Dscal(N int, alpha float64, X []float64, incX int)
 TEXT ·Dscal(SB), 7, $0
-	MOVL	N+0(FP), BP
+	MOVQ	N+0(FP), BP
 	MOVSD	alpha+8(FP), X0
 	MOVQ	X_data+16(FP), SI
-	MOVL	incX+32(FP), AX
+	MOVQ	incX+40(FP), AX
 
 	// Check data bounaries
-	MOVL	BP, CX
-	DECL	CX
-	IMULL	AX, CX	// CX = incX * (N - 1)
-	CMPL	CX, X_len+24(FP)
+	MOVQ	BP, CX
+	DECQ	CX
+	IMULQ	AX, CX	// CX = incX * (N - 1)
+	CMPQ	CX, X_len+24(FP)
 	JGE		panic
 
 	// Setup strides

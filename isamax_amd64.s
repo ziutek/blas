@@ -1,14 +1,14 @@
 // func Isamax(N int, X []float32, incX int) int
 TEXT ·Isamax(SB), 7, $0
-	MOVL	N+0(FP), BP
+	MOVQ	N+0(FP), BP
 	MOVQ	X+8(FP), SI	// X.data
-	MOVL	incX+24(FP), AX
+	MOVQ	incX+32(FP), AX
 
 	// Check data bounaries
-	MOVL	BP, CX
-	DECL	CX
-	IMULL	AX, CX	// CX = incX * (N - 1)
-	CMPL	CX, X_len+16(FP)
+	MOVQ	BP, CX
+	DECQ	CX
+	IMULQ	AX, CX	// CX = incX * (N - 1)
+	CMPQ	CX, X_len+16(FP)
 	JGE		panic
 
 	// Max value
@@ -50,7 +50,7 @@ less_or_equal:
 
 end:
 	// Return the max index
-	MOVL	BX, r+32(FP)
+	MOVQ	BX, r+40(FP)
 	RET
 
 panic:

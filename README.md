@@ -37,4 +37,4 @@ not implemented
 
 #### Documentation
 
-http://gopkgdoc.appspot.com/pkg/github.com/ziutek/blas
+http://godoc.org/github.com/ziutek/blas

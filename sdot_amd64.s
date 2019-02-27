@@ -139,5 +139,5 @@ end:
 	RET
 
 panic:
-	CALL	runtime·panicindex(SB)
+	CALL	·panicIndex(SB)
 	RET

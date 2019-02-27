@@ -297,6 +297,6 @@ rest_diff:
 	RET
 
 panic:
-	CALL	runtime·panicindex(SB)
+	CALL	·panicIndex(SB)
 end:
 	RET

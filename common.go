@@ -11,3 +11,7 @@ const (
 	NoTrans = Transpose(111)
 	Trans   = Transpose(112)
 )
+
+func panicIndex() {
+	panic("index out of range")
+}
